@@ -1,0 +1,27 @@
+{
+  "expo": {
+    "name": "Health Tracker",
+    "slug": "health-tracker",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "healthtracker",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "android": {
+      "package": "com.yourname.healthtracker",
+      "adaptiveIcon": {
+        "backgroundColor": "#1E293B"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.yourname.healthtracker",
+      "supportsTablet": true
+    },
+    "plugins": [
+      "expo-router"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
