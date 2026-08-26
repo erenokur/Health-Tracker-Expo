@@ -16,7 +16,7 @@ export default function MedListScreen() {
   useFocusEffect(
     useCallback(() => {
       setMeds(listMedications());
-    }, [])
+    }, []),
   );
 
   return (
@@ -40,19 +40,27 @@ export default function MedListScreen() {
           button inline in the same grid as the original Kivy screen. */}
       <View style={styles.editList}>
         {meds.map((m) => (
-          <Pressable key={m.id} style={styles.editRow} onPress={() => router.push(`/medication?id=${m.id}`)}>
+          <Pressable
+            key={m.id}
+            style={styles.editRow}
+            onPress={() => router.push(`/medication?id=${m.id}`)}
+          >
             <Text style={styles.editRowText}>Düzenle: {m.name}</Text>
           </Pressable>
         ))}
       </View>
-      <MenuButton label="Geri Dön" variant="muted" onPress={() => router.push("/med-menu")} />
+      <MenuButton
+        label="Geri Dön"
+        variant="muted"
+        onPress={() => router.push("/med-menu")}
+      />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16 },
-  title: { fontSize: 20, fontWeight: "bold", marginBottom: 12 },
+  container: { flex: 1, padding: 16, backgroundColor: "#f8fafc" },
+  title: { fontSize: 20, fontWeight: "bold", marginBottom: 12, color: "#000" },
   editList: { marginTop: 8, marginBottom: 12 },
   editRow: {
     backgroundColor: "#e0f2fe",

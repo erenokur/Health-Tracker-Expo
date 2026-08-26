@@ -13,7 +13,15 @@ export function addBpLog(input: BpLogInput): void {
   db.runSync(
     `INSERT INTO bp_logs (id, timestamp, sys, dia, pulse, note, updated_at, deleted, synced)
      VALUES (?, ?, ?, ?, ?, ?, ?, 0, 0)`,
-    [newId(), nowDisplay(), input.sys, input.dia, input.pulse, input.note, nowIso()]
+    [
+      newId(),
+      nowDisplay(),
+      input.sys,
+      input.dia,
+      input.pulse,
+      input.note,
+      nowIso(),
+    ],
   );
 }
 
@@ -21,8 +29,14 @@ export function addBpLog(input: BpLogInput): void {
 // same "fill in 01/12-31 for unset parts" logic as the original DateFilterMixin.
 function buildBound(filter: DateFilter, isStart: boolean): string | null {
   if (!filter.year || filter.year === "Tümü") return null;
-  const month = filter.month && filter.month !== "Tümü" ? filter.month : isStart ? "01" : "12";
-  const day = filter.day && filter.day !== "Tümü" ? filter.day : isStart ? "01" : "31";
+  const month =
+    filter.month && filter.month !== "Tümü"
+      ? filter.month
+      : isStart
+        ? "01"
+        : "12";
+  const day =
+    filter.day && filter.day !== "Tümü" ? filter.day : isStart ? "01" : "31";
   return `${filter.year}-${month}-${day}`;
 }
 
@@ -44,4 +58,10 @@ export function listBpLogs(start: DateFilter, end: DateFilter): BpLog[] {
   query += " ORDER BY timestamp DESC";
 
   return db.getAllSync<BpLog>(query, params);
+}
+
+export function getLatestBpLog(): BpLog | null {
+  return db.getFirstSync<BpLog>(
+    "SELECT * FROM bp_logs WHERE deleted = 0 ORDER BY timestamp DESC LIMIT 1",
+  );
 }

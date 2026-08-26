@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "scheme": "healthtracker",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "android": {
       "package": "com.yourname.healthtracker",
@@ -18,7 +18,23 @@
       "supportsTablet": true
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "react-native-android-widget",
+        {
+          "widgets": [
+            {
+              "name": "LatestBp",
+              "label": "Son Tansiyon",
+              "minWidth": "250dp",
+              "minHeight": "120dp",
+              "description": "En son tansiyon ölçümünü gösterir",
+              "previewImage": "./assets/widget-preview/latest-bp.png",
+              "updatePeriodMillis": 1800000
+            }
+          ]
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

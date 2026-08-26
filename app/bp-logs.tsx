@@ -13,7 +13,9 @@ export default function BpLogScreen() {
   const initial = todayRange();
   const [start, setStart] = useState<DateFilter>(initial.start);
   const [end, setEnd] = useState<DateFilter>(initial.end);
-  const [logs, setLogs] = useState<BpLog[]>(() => listBpLogs(initial.start, initial.end));
+  const [logs, setLogs] = useState<BpLog[]>(() =>
+    listBpLogs(initial.start, initial.end),
+  );
 
   function applyFilter() {
     setLogs(listBpLogs(start, end));
@@ -21,7 +23,11 @@ export default function BpLogScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={["bottom"]}>
-      <DateSpinnerRow label="Başlangıç Tarihi:" value={start} onChange={setStart} />
+      <DateSpinnerRow
+        label="Başlangıç Tarihi:"
+        value={start}
+        onChange={setStart}
+      />
       <DateSpinnerRow label="Bitiş Tarihi:" value={end} onChange={setEnd} />
       <MenuButton label="FİLTREYİ UYGULA" onPress={applyFilter} />
 
@@ -29,23 +35,35 @@ export default function BpLogScreen() {
         data={logs}
         keyExtractor={(r) => r.id}
         columns={[
-          { header: "Tarih", flex: 1.2, render: (r) => r.timestamp.slice(5, 16) },
+          {
+            header: "Tarih",
+            flex: 1.2,
+            render: (r) => r.timestamp.slice(5, 16),
+          },
           { header: "Büyük", render: (r) => String(r.sys) },
           { header: "Küçük", render: (r) => String(r.dia) },
-          { header: "Nabız", render: (r) => (r.pulse != null ? String(r.pulse) : "-") },
+          {
+            header: "Nabız",
+            render: (r) => (r.pulse != null ? String(r.pulse) : "-"),
+          },
           {
             header: "Not",
             flex: 1.5,
-            render: (r) => (r.note.length > 10 ? r.note.slice(0, 10) + "..." : r.note),
+            render: (r) =>
+              r.note.length > 10 ? r.note.slice(0, 10) + "..." : r.note,
           },
         ]}
       />
 
-      <MenuButton label="Geri Dön" variant="muted" onPress={() => router.push("/log-menu")} />
+      <MenuButton
+        label="Geri Dön"
+        variant="muted"
+        onPress={() => router.push("/log-menu")}
+      />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 12 },
+  container: { flex: 1, padding: 12, backgroundColor: "#f8fafc" },
 });

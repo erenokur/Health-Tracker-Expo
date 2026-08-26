@@ -14,12 +14,20 @@ interface Props<T> {
   emptyLabel?: string;
 }
 
-export function DataTable<T>({ columns, data, keyExtractor, emptyLabel = "Kayıt Bulunamadı" }: Props<T>) {
+export function DataTable<T>({
+  columns,
+  data,
+  keyExtractor,
+  emptyLabel = "Kayıt Bulunamadı",
+}: Props<T>) {
   return (
     <View style={styles.container}>
       <View style={styles.headerRow}>
         {columns.map((col) => (
-          <Text key={col.header} style={[styles.headerCell, { flex: col.flex ?? 1 }]}>
+          <Text
+            key={col.header}
+            style={[styles.headerCell, { flex: col.flex ?? 1 }]}
+          >
             {col.header}
           </Text>
         ))}
@@ -31,7 +39,11 @@ export function DataTable<T>({ columns, data, keyExtractor, emptyLabel = "Kayıt
         renderItem={({ item }) => (
           <View style={styles.row}>
             {columns.map((col) => (
-              <Text key={col.header} style={[styles.cell, { flex: col.flex ?? 1 }]} numberOfLines={1}>
+              <Text
+                key={col.header}
+                style={[styles.cell, { flex: col.flex ?? 1 }]}
+                numberOfLines={1}
+              >
                 {col.render(item)}
               </Text>
             ))}
@@ -58,6 +70,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#eee",
   },
-  cell: { fontSize: 13 },
+  cell: { fontSize: 13, color: "#000" },
   empty: { textAlign: "center", padding: 20, color: "#888" },
 });

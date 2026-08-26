@@ -35,31 +35,55 @@ export default function MedTrackingScreen() {
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>İlaç İçildi Kaydı</Text>
 
-      <Text style={styles.label}>Kullanılan İlacı Seçiniz (Sadece Aktifler):</Text>
-      <Picker selectedValue={selectedMed} onValueChange={setSelectedMed} style={styles.picker}>
-        {meds.length === 0 && <Picker.Item label="Aktif ilaç yok" value="" />}
-        {meds.map((m) => (
-          <Picker.Item key={m} label={m} value={m} />
-        ))}
-      </Picker>
+        <Text style={styles.label}>
+          Kullanılan İlacı Seçiniz (Sadece Aktifler):
+        </Text>
+        <Picker
+          selectedValue={selectedMed}
+          onValueChange={setSelectedMed}
+          style={styles.picker}
+        >
+          {meds.length === 0 && <Picker.Item label="Aktif ilaç yok" value="" />}
+          {meds.map((m) => (
+            <Picker.Item key={m} label={m} value={m} />
+          ))}
+        </Picker>
 
-      <Text style={styles.label}>Açlık/Tokluk Durumu:</Text>
-      <Picker selectedValue={meal} onValueChange={(v) => setMeal(v as UsageMeal)} style={styles.picker}>
-        <Picker.Item label="Aç" value="Aç" />
-        <Picker.Item label="Tok" value="Tok" />
-      </Picker>
+        <Text style={styles.label}>Açlık/Tokluk Durumu:</Text>
+        <Picker
+          selectedValue={meal}
+          onValueChange={(v) => setMeal(v as UsageMeal)}
+          style={styles.picker}
+        >
+          <Picker.Item label="Aç" value="Aç" />
+          <Picker.Item label="Tok" value="Tok" />
+        </Picker>
 
-        <MenuButton label="İÇİLDİ OLARAK KAYDET" variant="primary" onPress={handleSave} />
-        <MenuButton label="Geri Dön" variant="muted" onPress={() => router.push("/tracking-menu")} />
+        <MenuButton
+          label="İÇİLDİ OLARAK KAYDET"
+          variant="primary"
+          onPress={handleSave}
+        />
+        <MenuButton
+          label="Geri Dön"
+          variant="muted"
+          onPress={() => router.push("/tracking-menu")}
+        />
       </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1 },
+  flex: { flex: 1, backgroundColor: "#f8fafc" },
   container: { padding: 20 },
-  title: { fontSize: 28, fontWeight: "bold", marginBottom: 20, textAlign: "center" },
-  label: { fontWeight: "600", marginBottom: 6, marginTop: 10 },
-  picker: { marginBottom: 10 },
+  title: {
+    fontSize: 28,
+    fontWeight: "bold",
+    marginBottom: 20,
+    textAlign: "center",
+    color: "#000",
+  },
+  label: { fontWeight: "600", marginBottom: 6, marginTop: 10, color: "#000" },
+  picker: { marginBottom: 10, color: "#000", backgroundColor: "#fff" },
 });
