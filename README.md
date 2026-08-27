@@ -102,3 +102,115 @@ works normally.
   a dev build)
 - Phase 3: Wear OS companion app (separate Kotlin/Compose project)
 - Phase 4: PHP API + sync engine — the DB layer above is already shaped for it
+
+## to first time setup Android Environment without Android Studio
+
+1. Download & set up the SDK command-line tools (fetches whatever the current version is, so this doesn't go stale):
+
+bash
+mkdir -p ~/Android/Sdk/cmdline-tools
+cd ~/Android/Sdk/cmdline-tools
+
+TOOLS_URL=$(curl -s https://developer.android.com/studio | grep -o 'https://dl.google.com/android/repository/commandlinetools-linux-[0-9]*_latest.zip' | head -1)
+wget "$TOOLS_URL" -O tools.zip
+unzip tools.zip
+mv cmdline-tools latest
+rm tools.zip
+
+2. Set environment variables (add to ~/.bashrc):
+
+bash
+cat >> ~/.bashrc << 'EOF'
+export ANDROID_HOME=$HOME/Android/Sdk
+export ANDROID_SDK_ROOT=$HOME/Android/Sdk
+export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator
+EOF
+source ~/.bashrc
+
+3. Accept licenses and install the actual SDK pieces:
+
+bash
+yes | sdkmanager --licenses
+
+sdkmanager "platform-tools" \
+ "build-tools;36.0.0" \
+ "platforms;android-36" \
+ "platforms;android-35" \
+ "platforms;android-34"
+
+4. (Optional but useful) Wear OS emulator images, so you can iterate on the watch app without your physical watch plugged in every time:
+
+bash
+sdkmanager "system-images;android-34;android-wear;x86_64"
+sdkmanager "emulator"
+adb devices
+
+### To build this app for Android
+
+1. cd android
+2. ./gradlew assembleRelease
+3. The APK will be in `android/app/build/outputs/apk/release/app-release.apk`
+
+## To buid with EAS (Expo Application Services)
+
+1. Install EAS CLI if you haven't already:
+
+```bash
+npm install -g eas-cli
+```
+
+2. Log in to your Expo account:
+
+```bash
+eas login
+```
+
+3. Configure your project for EAS:
+
+```bash
+eas build:configure
+```
+
+4. Build the app for Android:
+
+```bash
+eas build --platform android
+```
+
+5. Create preview profile to get apk file for testing on eas.json file:
+
+```json
+{
+  "cli": {
+    "version": ">= 12.0.0"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "production": {}
+  },
+  "submit": {
+    "production": {}
+  }
+}
+```
+
+6. Run the build command for the preview profile:
+
+```bash
+eas build --platform android --profile preview
+```
+
+7. To generate Google Play Store release build, run the following command:
+
+```bash
+eas build --platform android --profile production
+```
