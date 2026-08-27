@@ -3,19 +3,27 @@ import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { DataTable } from "../src/components/DataTable";
-import { DateSpinnerRow, todayRange } from "../src/components/DateRangeFilter";
+import { DateTimePickerButton } from "../src/components/DateTimePickerButton";
 import { MenuButton } from "../src/components/MenuButton";
 import { listMedLogs } from "../src/db/medLogs";
-import { MedLog, DateFilter } from "../src/types";
+import { MedLog } from "../src/types";
 
 export default function MedLogScreen() {
   const router = useRouter();
-  const initial = todayRange();
-  const [start, setStart] = useState<DateFilter>(initial.start);
-  const [end, setEnd] = useState<DateFilter>(initial.end);
-  const [logs, setLogs] = useState<MedLog[]>(() =>
-    listMedLogs(initial.start, initial.end),
-  );
+
+  const [start, setStart] = useState<Date>(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  });
+
+  const [end, setEnd] = useState<Date>(() => {
+    const d = new Date();
+    d.setHours(23, 59, 59, 999);
+    return d;
+  });
+
+  const [logs, setLogs] = useState<MedLog[]>(() => listMedLogs(start, end));
 
   function applyFilter() {
     setLogs(listMedLogs(start, end));
@@ -23,12 +31,18 @@ export default function MedLogScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={["bottom"]}>
-      <DateSpinnerRow
+      <DateTimePickerButton
         label="Başlangıç Tarihi:"
-        value={start}
+        mode="date"
+        date={start}
         onChange={setStart}
       />
-      <DateSpinnerRow label="Bitiş Tarihi:" value={end} onChange={setEnd} />
+      <DateTimePickerButton
+        label="Bitiş Tarihi:"
+        mode="date"
+        date={end}
+        onChange={setEnd}
+      />
       <MenuButton label="FİLTREYİ UYGULA" onPress={applyFilter} />
 
       <DataTable

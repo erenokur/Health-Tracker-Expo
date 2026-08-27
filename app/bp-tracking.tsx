@@ -6,6 +6,7 @@ import { requestWidgetUpdate } from "react-native-android-widget";
 import { MenuButton } from "../src/components/MenuButton";
 import { addBpLog, getLatestBpLog } from "../src/db/bpLogs";
 import { LatestBpWidget } from "../src/widgets/LatestBpWidget";
+import { DateTimePickerButton } from "../src/components/DateTimePickerButton";
 
 async function refreshBpWidget() {
   const latest = getLatestBpLog();
@@ -19,9 +20,7 @@ async function refreshBpWidget() {
         timestamp={latest?.timestamp}
       />
     ),
-    widgetNotFound: () => {
-      // No widget on the home screen yet — nothing to update.
-    },
+    widgetNotFound: () => {},
   });
 }
 
@@ -31,6 +30,7 @@ export default function BpTrackingScreen() {
   const [dia, setDia] = useState("");
   const [pulse, setPulse] = useState("");
   const [note, setNote] = useState("");
+  const [logDate, setLogDate] = useState(new Date());
 
   function handleSave() {
     if (!sys || !dia) {
@@ -42,6 +42,7 @@ export default function BpTrackingScreen() {
       dia: parseInt(dia, 10),
       pulse: pulse ? parseInt(pulse, 10) : null,
       note,
+      customDate: logDate,
     });
     refreshBpWidget();
     Alert.alert("Başarılı", "Tansiyon kaydı eklendi.");
@@ -49,6 +50,7 @@ export default function BpTrackingScreen() {
     setDia("");
     setPulse("");
     setNote("");
+    setLogDate(new Date());
     router.push("/tracking-menu");
   }
 
@@ -56,6 +58,11 @@ export default function BpTrackingScreen() {
     <SafeAreaView style={styles.flex} edges={["bottom"]}>
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>Tansiyon Ekle</Text>
+        <DateTimePickerButton
+          label="Tarih ve Saat"
+          date={logDate}
+          onChange={setLogDate}
+        />
         <TextInput
           placeholderTextColor="#64748b"
           style={styles.input}

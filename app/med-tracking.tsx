@@ -8,11 +8,14 @@ import { listActiveMedicationNames } from "../src/db/medications";
 import { addMedLog } from "../src/db/medLogs";
 import { UsageMeal } from "../src/types";
 
+import { DateTimePickerButton } from "../src/components/DateTimePickerButton";
+
 export default function MedTrackingScreen() {
   const router = useRouter();
   const [meds, setMeds] = useState<string[]>([]);
   const [selectedMed, setSelectedMed] = useState<string>("");
   const [meal, setMeal] = useState<UsageMeal>("Aç");
+  const [logDate, setLogDate] = useState(new Date());
 
   useEffect(() => {
     const active = listActiveMedicationNames();
@@ -25,7 +28,7 @@ export default function MedTrackingScreen() {
       Alert.alert("Hata", "Lütfen bir ilaç seçin.");
       return;
     }
-    addMedLog(selectedMed, meal);
+    addMedLog(selectedMed, meal, logDate);
     Alert.alert("Başarılı", `${selectedMed} içildi olarak kaydedildi.`);
     router.push("/tracking-menu");
   }
@@ -34,6 +37,11 @@ export default function MedTrackingScreen() {
     <SafeAreaView style={styles.flex} edges={["bottom"]}>
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>İlaç İçildi Kaydı</Text>
+        <DateTimePickerButton
+          label="Tarih ve Saat"
+          date={logDate}
+          onChange={setLogDate}
+        />
 
         <Text style={styles.label}>
           Kullanılan İlacı Seçiniz (Sadece Aktifler):

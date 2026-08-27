@@ -103,6 +103,11 @@ works normally.
 - Phase 3: Wear OS companion app (separate Kotlin/Compose project)
 - Phase 4: PHP API + sync engine — the DB layer above is already shaped for it
 
+## Testing
+
+npx expo prebuild -p android --clean
+npx expo run:android
+
 ## to first time setup Android Environment without Android Studio
 
 1. Download & set up the SDK command-line tools (fetches whatever the current version is, so this doesn't go stale):

@@ -7,15 +7,20 @@ export interface BpLogInput {
   dia: number;
   pulse: number | null;
   note: string;
+  customDate?: Date; // allow custom date
 }
 
 export function addBpLog(input: BpLogInput): void {
+  const tDisplay = input.customDate
+    ? `${input.customDate.getFullYear()}-${String(input.customDate.getMonth() + 1).padStart(2, "0")}-${String(input.customDate.getDate()).padStart(2, "0")} ${String(input.customDate.getHours()).padStart(2, "0")}:${String(input.customDate.getMinutes()).padStart(2, "0")}`
+    : nowDisplay();
+
   db.runSync(
     `INSERT INTO bp_logs (id, timestamp, sys, dia, pulse, note, updated_at, deleted, synced)
      VALUES (?, ?, ?, ?, ?, ?, ?, 0, 0)`,
     [
       newId(),
-      nowDisplay(),
+      tDisplay,
       input.sys,
       input.dia,
       input.pulse,
@@ -25,22 +30,14 @@ export function addBpLog(input: BpLogInput): void {
   );
 }
 
-// Builds a YYYY-MM-DD bound from the {year, month, day} spinner selections,
-// same "fill in 01/12-31 for unset parts" logic as the original DateFilterMixin.
-function buildBound(filter: DateFilter, isStart: boolean): string | null {
-  if (!filter.year || filter.year === "Tümü") return null;
-  const month =
-    filter.month && filter.month !== "Tümü"
-      ? filter.month
-      : isStart
-        ? "01"
-        : "12";
-  const day =
-    filter.day && filter.day !== "Tümü" ? filter.day : isStart ? "01" : "31";
-  return `${filter.year}-${month}-${day}`;
+function buildBound(date: Date, isStart: boolean): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
 }
 
-export function listBpLogs(start: DateFilter, end: DateFilter): BpLog[] {
+export function listBpLogs(start: Date, end: Date): BpLog[] {
   let query = "SELECT * FROM bp_logs WHERE deleted = 0";
   const params: string[] = [];
 
