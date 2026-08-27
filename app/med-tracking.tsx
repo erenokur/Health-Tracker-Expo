@@ -7,11 +7,12 @@ import { MenuButton } from "../src/components/MenuButton";
 import { listActiveMedicationNames } from "../src/db/medications";
 import { addMedLog } from "../src/db/medLogs";
 import { UsageMeal } from "../src/types";
-
 import { DateTimePickerButton } from "../src/components/DateTimePickerButton";
+import { useTheme } from "../src/theme/ThemeContext";
 
 export default function MedTrackingScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
   const [meds, setMeds] = useState<string[]>([]);
   const [selectedMed, setSelectedMed] = useState<string>("");
   const [meal, setMeal] = useState<UsageMeal>("Aç");
@@ -34,22 +35,22 @@ export default function MedTrackingScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.flex} edges={["bottom"]}>
+    <SafeAreaView style={[styles.flex, { backgroundColor: colors.background }]} edges={["bottom"]}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.title}>İlaç İçildi Kaydı</Text>
+        <Text style={[styles.title, { color: colors.text }]}>İlaç İçildi Kaydı</Text>
         <DateTimePickerButton
           label="Tarih ve Saat"
           date={logDate}
           onChange={setLogDate}
         />
 
-        <Text style={styles.label}>
+        <Text style={[styles.label, { color: colors.text }]}>
           Kullanılan İlacı Seçiniz (Sadece Aktifler):
         </Text>
         <Picker
           selectedValue={selectedMed}
           onValueChange={setSelectedMed}
-          style={styles.picker}
+          style={[styles.picker, { color: colors.text, backgroundColor: colors.inputBackground }]}
         >
           {meds.length === 0 && <Picker.Item label="Aktif ilaç yok" value="" />}
           {meds.map((m) => (
@@ -57,11 +58,11 @@ export default function MedTrackingScreen() {
           ))}
         </Picker>
 
-        <Text style={styles.label}>Açlık/Tokluk Durumu:</Text>
+        <Text style={[styles.label, { color: colors.text }]}>Açlık/Tokluk Durumu:</Text>
         <Picker
           selectedValue={meal}
           onValueChange={(v) => setMeal(v as UsageMeal)}
-          style={styles.picker}
+          style={[styles.picker, { color: colors.text, backgroundColor: colors.inputBackground }]}
         >
           <Picker.Item label="Aç" value="Aç" />
           <Picker.Item label="Tok" value="Tok" />
@@ -83,15 +84,9 @@ export default function MedTrackingScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: "#f8fafc" },
+  flex: { flex: 1 },
   container: { padding: 20 },
-  title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-    color: "#000",
-  },
-  label: { fontWeight: "600", marginBottom: 6, marginTop: 10, color: "#000" },
-  picker: { marginBottom: 10, color: "#000", backgroundColor: "#fff" },
+  title: { fontSize: 28, fontWeight: "bold", marginBottom: 20, textAlign: "center" },
+  label: { fontWeight: "600", marginBottom: 6, marginTop: 10 },
+  picker: { marginBottom: 10 },
 });

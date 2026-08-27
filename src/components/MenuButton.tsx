@@ -1,5 +1,6 @@
 import React from "react";
 import { Pressable, Text, StyleSheet } from "react-native";
+import { useTheme } from "../theme/ThemeContext";
 
 interface Props {
   label: string;
@@ -8,13 +9,20 @@ interface Props {
 }
 
 export function MenuButton({ label, onPress, variant = "default" }: Props) {
+  const { colors } = useTheme();
+  const bg =
+    variant === "primary"
+      ? colors.primary
+      : variant === "muted"
+      ? colors.buttonMuted
+      : colors.buttonDefault;
+
   return (
     <Pressable
       onPress={onPress}
       style={({ pressed }) => [
         styles.base,
-        variant === "primary" && styles.primary,
-        variant === "muted" && styles.muted,
+        { backgroundColor: bg },
         pressed && styles.pressed,
       ]}
     >
@@ -24,15 +32,7 @@ export function MenuButton({ label, onPress, variant = "default" }: Props) {
 }
 
 const styles = StyleSheet.create({
-  base: {
-    backgroundColor: "#334155",
-    borderRadius: 10,
-    paddingVertical: 18,
-    paddingHorizontal: 16,
-    marginBottom: 14,
-  },
-  primary: { backgroundColor: "#16A34A" },
-  muted: { backgroundColor: "#475569" },
+  base: { borderRadius: 10, paddingVertical: 18, paddingHorizontal: 16, marginBottom: 14 },
   pressed: { opacity: 0.75 },
   text: { color: "#fff", fontSize: 18, fontWeight: "600", textAlign: "center" },
 });

@@ -1,0 +1,41 @@
+export const lightColors = {
+  background: "#f8fafc",
+  surface: "#ffffff",
+  text: "#000000",
+  textMuted: "#64748b",
+  border: "#cbd5e1",
+  primary: "#16A34A",
+  header: "#1E293B",
+  headerText: "#ffffff",
+  buttonDefault: "#334155",
+  buttonMuted: "#475569",
+  inputBackground: "#ffffff",
+  editRowBackground: "#e0f2fe",
+  editRowText: "#0369a1",
+  tableHeaderBg: "#333333",
+  tableHeaderText: "#ffffff",
+  tableRowBorder: "#eeeeee",
+  tableEmptyText: "#888888",
+};
+
+export const darkColors = {
+  background: "#0f172a",
+  surface: "#1e293b",
+  text: "#f1f5f9",
+  textMuted: "#94a3b8",
+  border: "#334155",
+  primary: "#22c55e",
+  header: "#0b1220",
+  headerText: "#f1f5f9",
+  buttonDefault: "#334155",
+  buttonMuted: "#475569",
+  inputBackground: "#1e293b",
+  editRowBackground: "#0c4a6e",
+  editRowText: "#7dd3fc",
+  tableHeaderBg: "#0b1220",
+  tableHeaderText: "#f1f5f9",
+  tableRowBorder: "#334155",
+  tableEmptyText: "#94a3b8",
+};
+
+export type ThemeColors = typeof lightColors;

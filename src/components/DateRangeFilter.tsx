@@ -4,14 +4,8 @@ import { Picker } from "@react-native-picker/picker";
 import { DateFilter } from "../types";
 
 const YEARS = ["Tümü", "2024", "2025", "2026", "2027", "2028", "2029", "2030"];
-const MONTHS = [
-  "Tümü",
-  ...Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, "0")),
-];
-const DAYS = [
-  "Tümü",
-  ...Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, "0")),
-];
+const MONTHS = ["Tümü", ...Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, "0"))];
+const DAYS = ["Tümü", ...Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, "0"))];
 
 function todayFilter(): DateFilter {
   const d = new Date();
@@ -72,7 +66,7 @@ export function DateSpinnerRow({ label, value, onChange }: Props) {
 
 const styles = StyleSheet.create({
   wrap: { marginBottom: 8 },
-  label: { fontWeight: "bold", marginBottom: 4, color: "#000" },
+  label: { fontWeight: "bold", marginBottom: 4 },
   row: { flexDirection: "row", gap: 4 },
-  picker: { flex: 1, color: "#000", backgroundColor: "#fff" },
+  picker: { flex: 1 },
 });

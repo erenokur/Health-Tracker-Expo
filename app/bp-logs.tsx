@@ -7,9 +7,11 @@ import { DateTimePickerButton } from "../src/components/DateTimePickerButton";
 import { MenuButton } from "../src/components/MenuButton";
 import { listBpLogs } from "../src/db/bpLogs";
 import { BpLog } from "../src/types";
+import { useTheme } from "../src/theme/ThemeContext";
 
 export default function BpLogScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
 
   const [start, setStart] = useState<Date>(() => {
     const d = new Date();
@@ -30,7 +32,10 @@ export default function BpLogScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={["bottom"]}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: colors.background }]}
+      edges={["bottom"]}
+    >
       <DateTimePickerButton
         label="Başlangıç Tarihi:"
         mode="date"
@@ -79,5 +84,5 @@ export default function BpLogScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 12, backgroundColor: "#f8fafc" },
+  container: { flex: 1, padding: 12 },
 });

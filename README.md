@@ -86,6 +86,37 @@ expo@^<sdk>` then `npx expo install --fix`), since downgrading Expo Go
   delete) exists in the repo layer — add a button once you decide where it
   should live in the flow.
 
+## Theme (light/dark)
+
+`src/theme/` holds the real switchable theme: `colors.ts` defines the light
+and dark palettes, `ThemeContext.tsx` provides `useTheme()` (returns
+`{ mode, colors, toggleTheme }`) and persists the chosen mode in the
+`settings` SQLite table so it survives app restarts. Toggle button lives on
+the main menu.
+
+This is intentionally **not** tied to the OS light/dark setting —
+`app.json`'s `userInterfaceStyle: "light"` stays fixed, which keeps Android's
+automatic "force dark" from ever touching native `TextInput`/`Picker`
+rendering again (that's what caused the original contrast bug). Every screen
+now pulls its colors from `useTheme()` instead of hardcoding them, so the
+toggle actually repaints everything, but it's fully app-controlled rather
+than reacting to the phone's system theme.
+
+No new native dependency was needed for this — it's pure JS state plus
+`expo-status-bar` (already a dependency) for flipping the status bar icons
+light/dark. No rebuild required for theme changes alone.
+
+## Backup / Restore (`src/db/backup.ts`)
+
+`exportData()` dumps all four tables to a JSON file and opens the share
+sheet (so you can save it to Drive, send it to yourself, etc.).
+`importData()` picks a JSON file and **merges** it in via
+`INSERT OR IGNORE` inside a transaction — existing rows are left alone,
+so importing never wipes what's already on the device. Both are wired to
+buttons on the Kayıtlar (log) menu. This is the recommended flow before
+uninstalling/reinstalling the app during development: export first, import
+right after reinstalling.
+
 ## Safe area / navigation bar handling
 
 All screens now use `SafeAreaView` (from `react-native-safe-area-context`,

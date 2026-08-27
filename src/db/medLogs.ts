@@ -1,6 +1,6 @@
 import { db } from "./database";
 import { newId, nowIso, nowDisplay } from "./uuid";
-import { MedLog, DateFilter, UsageMeal } from "../types";
+import { MedLog, UsageMeal } from "../types";
 
 export function addMedLog(
   medName: string,

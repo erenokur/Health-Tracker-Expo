@@ -7,6 +7,7 @@ import { MenuButton } from "../src/components/MenuButton";
 import { addBpLog, getLatestBpLog } from "../src/db/bpLogs";
 import { LatestBpWidget } from "../src/widgets/LatestBpWidget";
 import { DateTimePickerButton } from "../src/components/DateTimePickerButton";
+import { useTheme } from "../src/theme/ThemeContext";
 
 async function refreshBpWidget() {
   const latest = getLatestBpLog();
@@ -26,6 +27,7 @@ async function refreshBpWidget() {
 
 export default function BpTrackingScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
   const [sys, setSys] = useState("");
   const [dia, setDia] = useState("");
   const [pulse, setPulse] = useState("");
@@ -55,41 +57,41 @@ export default function BpTrackingScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.flex} edges={["bottom"]}>
+    <SafeAreaView style={[styles.flex, { backgroundColor: colors.background }]} edges={["bottom"]}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.title}>Tansiyon Ekle</Text>
+        <Text style={[styles.title, { color: colors.text }]}>Tansiyon Ekle</Text>
         <DateTimePickerButton
           label="Tarih ve Saat"
           date={logDate}
           onChange={setLogDate}
         />
         <TextInput
-          placeholderTextColor="#64748b"
-          style={styles.input}
+          placeholderTextColor={colors.textMuted}
+          style={[styles.input, { color: colors.text, backgroundColor: colors.inputBackground, borderColor: colors.border }]}
           placeholder="Büyük Tansiyon (Örn: 120)"
           keyboardType="number-pad"
           value={sys}
           onChangeText={setSys}
         />
         <TextInput
-          placeholderTextColor="#64748b"
-          style={styles.input}
+          placeholderTextColor={colors.textMuted}
+          style={[styles.input, { color: colors.text, backgroundColor: colors.inputBackground, borderColor: colors.border }]}
           placeholder="Küçük Tansiyon (Örn: 80)"
           keyboardType="number-pad"
           value={dia}
           onChangeText={setDia}
         />
         <TextInput
-          placeholderTextColor="#64748b"
-          style={styles.input}
+          placeholderTextColor={colors.textMuted}
+          style={[styles.input, { color: colors.text, backgroundColor: colors.inputBackground, borderColor: colors.border }]}
           placeholder="Nabız"
           keyboardType="number-pad"
           value={pulse}
           onChangeText={setPulse}
         />
         <TextInput
-          placeholderTextColor="#64748b"
-          style={styles.input}
+          placeholderTextColor={colors.textMuted}
+          style={[styles.input, { color: colors.text, backgroundColor: colors.inputBackground, borderColor: colors.border }]}
           placeholder="Açıklama / Notunuz"
           value={note}
           onChangeText={setNote}
@@ -106,23 +108,14 @@ export default function BpTrackingScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: "#f8fafc" },
+  flex: { flex: 1 },
   container: { padding: 20 },
-  title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-    color: "#000",
-  },
+  title: { fontSize: 28, fontWeight: "bold", marginBottom: 20, textAlign: "center" },
   input: {
     borderWidth: 1,
-    borderColor: "#cbd5e1",
     borderRadius: 8,
     padding: 14,
     marginBottom: 14,
     fontSize: 18,
-    color: "#000",
-    backgroundColor: "#fff",
   },
 });

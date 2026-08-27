@@ -1,6 +1,6 @@
 import { db } from "./database";
 import { newId, nowIso, nowDisplay } from "./uuid";
-import { BpLog, DateFilter } from "../types";
+import { BpLog } from "../types";
 
 export interface BpLogInput {
   sys: number;

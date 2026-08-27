@@ -7,10 +7,12 @@ import { MenuButton } from "../src/components/MenuButton";
 import { listCategories, ensureCategory } from "../src/db/categories";
 import { getMedication, saveMedication } from "../src/db/medications";
 import { ActiveStatus, MealType } from "../src/types";
+import { useTheme } from "../src/theme/ThemeContext";
 
 export default function MedicationScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const router = useRouter();
+  const { colors } = useTheme();
   const editing = Boolean(id);
 
   const [categories, setCategories] = useState<string[]>([]);
@@ -79,53 +81,53 @@ export default function MedicationScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.flex} edges={["bottom"]}>
+    <SafeAreaView style={[styles.flex, { backgroundColor: colors.background }]} edges={["bottom"]}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.title}>
+        <Text style={[styles.title, { color: colors.text }]}>
           {editing ? "İlacı Düzenle" : "Yeni İlaç Ekle"}
         </Text>
 
         <TextInput
-          placeholderTextColor="#64748b"
-          style={styles.input}
+          placeholderTextColor={colors.textMuted}
+          style={[styles.input, { color: colors.text, backgroundColor: colors.inputBackground, borderColor: colors.border }]}
           placeholder="İlaç Adı"
           value={name}
           onChangeText={setName}
         />
 
-        <Text style={styles.label}>Kategori</Text>
+        <Text style={[styles.label, { color: colors.text }]}>Kategori</Text>
         <Picker
           selectedValue={category}
           onValueChange={setCategory}
-          style={styles.picker}
+          style={[styles.picker, { color: colors.text, backgroundColor: colors.inputBackground }]}
         >
           {categories.map((c) => (
             <Picker.Item key={c} label={c} value={c} />
           ))}
         </Picker>
         <TextInput
-          placeholderTextColor="#64748b"
-          style={styles.input}
+          placeholderTextColor={colors.textMuted}
+          style={[styles.input, { color: colors.text, backgroundColor: colors.inputBackground, borderColor: colors.border }]}
           placeholder="Veya Yeni Kategori Yaz"
           value={newCategory}
           onChangeText={setNewCategory}
         />
 
-        <Text style={styles.label}>Durum</Text>
+        <Text style={[styles.label, { color: colors.text }]}>Durum</Text>
         <Picker
           selectedValue={status}
           onValueChange={(v) => setStatus(v as ActiveStatus)}
-          style={styles.picker}
+          style={[styles.picker, { color: colors.text, backgroundColor: colors.inputBackground }]}
         >
           <Picker.Item label="Aktif" value="Aktif" />
           <Picker.Item label="Pasif" value="Pasif" />
         </Picker>
 
-        <Text style={styles.label}>Açlık/Tokluk</Text>
+        <Text style={[styles.label, { color: colors.text }]}>Açlık/Tokluk</Text>
         <Picker
           selectedValue={mealType}
           onValueChange={(v) => setMealType(v as MealType)}
-          style={styles.picker}
+          style={[styles.picker, { color: colors.text, backgroundColor: colors.inputBackground }]}
         >
           <Picker.Item label="Aç" value="Aç" />
           <Picker.Item label="Tok" value="Tok" />
@@ -133,23 +135,27 @@ export default function MedicationScreen() {
         </Picker>
 
         <TextInput
-          placeholderTextColor="#64748b"
-          style={styles.input}
+          placeholderTextColor={colors.textMuted}
+          style={[styles.input, { color: colors.text, backgroundColor: colors.inputBackground, borderColor: colors.border }]}
           placeholder="Günlük Doz (Örn: 2)"
           keyboardType="number-pad"
           value={dailyDose}
           onChangeText={setDailyDose}
         />
         <TextInput
-          placeholderTextColor="#64748b"
-          style={styles.input}
+          placeholderTextColor={colors.textMuted}
+          style={[styles.input, { color: colors.text, backgroundColor: colors.inputBackground, borderColor: colors.border }]}
           placeholder="Özel Notlar"
           value={notes}
           onChangeText={setNotes}
         />
         <TextInput
-          placeholderTextColor="#64748b"
-          style={[styles.input, styles.multiline]}
+          placeholderTextColor={colors.textMuted}
+          style={[
+            styles.input,
+            styles.multiline,
+            { color: colors.text, backgroundColor: colors.inputBackground, borderColor: colors.border },
+          ]}
           placeholder="Açıklama (Ne işe yarar?)"
           value={description}
           onChangeText={setDescription}
@@ -172,20 +178,17 @@ export default function MedicationScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: "#f8fafc" },
+  flex: { flex: 1 },
   container: { padding: 20 },
-  title: { fontSize: 26, fontWeight: "bold", marginBottom: 16, color: "#000" },
-  label: { fontWeight: "600", marginTop: 8, marginBottom: 4, color: "#000" },
+  title: { fontSize: 26, fontWeight: "bold", marginBottom: 16 },
+  label: { fontWeight: "600", marginTop: 8, marginBottom: 4 },
   input: {
     borderWidth: 1,
-    borderColor: "#cbd5e1",
     borderRadius: 8,
     padding: 12,
     marginBottom: 12,
     fontSize: 16,
-    color: "#000",
-    backgroundColor: "#fff",
   },
   multiline: { height: 90, textAlignVertical: "top" },
-  picker: { marginBottom: 12, color: "#000", backgroundColor: "#fff" },
+  picker: { marginBottom: 12 },
 });

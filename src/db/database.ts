@@ -48,6 +48,11 @@ export function initDb() {
       deleted INTEGER NOT NULL DEFAULT 0,
       synced INTEGER NOT NULL DEFAULT 0
     );
+
+    CREATE TABLE IF NOT EXISTS settings (
+      key TEXT PRIMARY KEY,
+      value TEXT NOT NULL
+    );
   `);
 
   // Seed default categories (matches original app), ignoring if already present.

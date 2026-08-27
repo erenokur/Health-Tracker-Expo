@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, FlatList, StyleSheet } from "react-native";
+import { useTheme } from "../theme/ThemeContext";
 
 export interface Column<T> {
   header: string;
@@ -20,13 +21,14 @@ export function DataTable<T>({
   keyExtractor,
   emptyLabel = "Kayıt Bulunamadı",
 }: Props<T>) {
+  const { colors } = useTheme();
   return (
     <View style={styles.container}>
-      <View style={styles.headerRow}>
+      <View style={[styles.headerRow, { backgroundColor: colors.tableHeaderBg }]}>
         {columns.map((col) => (
           <Text
             key={col.header}
-            style={[styles.headerCell, { flex: col.flex ?? 1 }]}
+            style={[styles.headerCell, { color: colors.tableHeaderText, flex: col.flex ?? 1 }]}
           >
             {col.header}
           </Text>
@@ -35,13 +37,15 @@ export function DataTable<T>({
       <FlatList
         data={data}
         keyExtractor={keyExtractor}
-        ListEmptyComponent={<Text style={styles.empty}>{emptyLabel}</Text>}
+        ListEmptyComponent={
+          <Text style={[styles.empty, { color: colors.tableEmptyText }]}>{emptyLabel}</Text>
+        }
         renderItem={({ item }) => (
-          <View style={styles.row}>
+          <View style={[styles.row, { borderBottomColor: colors.tableRowBorder }]}>
             {columns.map((col) => (
               <Text
                 key={col.header}
-                style={[styles.cell, { flex: col.flex ?? 1 }]}
+                style={[styles.cell, { color: colors.text, flex: col.flex ?? 1 }]}
                 numberOfLines={1}
               >
                 {col.render(item)}
@@ -56,20 +60,9 @@ export function DataTable<T>({
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  headerRow: {
-    flexDirection: "row",
-    backgroundColor: "#333",
-    paddingVertical: 8,
-    paddingHorizontal: 4,
-  },
-  headerCell: { color: "#fff", fontWeight: "bold", fontSize: 13 },
-  row: {
-    flexDirection: "row",
-    paddingVertical: 8,
-    paddingHorizontal: 4,
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
-  },
-  cell: { fontSize: 13, color: "#000" },
-  empty: { textAlign: "center", padding: 20, color: "#888" },
+  headerRow: { flexDirection: "row", paddingVertical: 8, paddingHorizontal: 4 },
+  headerCell: { fontWeight: "bold", fontSize: 13 },
+  row: { flexDirection: "row", paddingVertical: 8, paddingHorizontal: 4, borderBottomWidth: 1 },
+  cell: { fontSize: 13 },
+  empty: { textAlign: "center", padding: 20 },
 });

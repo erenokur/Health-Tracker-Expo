@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, Pressable, StyleSheet, Platform } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { useTheme } from "../theme/ThemeContext";
 
 interface Props {
   label: string;
@@ -15,6 +16,7 @@ export function DateTimePickerButton({
   onChange,
   mode = "datetime",
 }: Props) {
+  const { colors } = useTheme();
   const [show, setShow] = useState(false);
   const [currentMode, setCurrentMode] = useState<"date" | "time">(
     mode === "time" ? "time" : "date",
@@ -77,12 +79,15 @@ export function DateTimePickerButton({
 
   return (
     <View style={styles.wrap}>
-      <Text style={styles.label}>{label}</Text>
+      <Text style={[styles.label, { color: colors.text }]}>{label}</Text>
       <Pressable
-        style={styles.button}
+        style={[
+          styles.button,
+          { backgroundColor: colors.inputBackground, borderColor: colors.border },
+        ]}
         onPress={() => showMode(mode === "time" ? "time" : "date")}
       >
-        <Text style={styles.buttonText}>{displayValue}</Text>
+        <Text style={[styles.buttonText, { color: colors.text }]}>{displayValue}</Text>
       </Pressable>
       {show && (
         <DateTimePicker
@@ -99,14 +104,12 @@ export function DateTimePickerButton({
 
 const styles = StyleSheet.create({
   wrap: { marginBottom: 12 },
-  label: { fontWeight: "600", marginBottom: 6, color: "#000" },
+  label: { fontWeight: "600", marginBottom: 6 },
   button: {
-    backgroundColor: "#fff",
     borderWidth: 1,
-    borderColor: "#cbd5e1",
     borderRadius: 8,
     padding: 14,
     justifyContent: "center",
   },
-  buttonText: { fontSize: 16, color: "#000" },
+  buttonText: { fontSize: 16 },
 });
