@@ -5,14 +5,23 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { initDb } from "../src/db/database";
 import { ThemeProvider, useTheme } from "../src/theme/ThemeContext";
 
+import { Pressable } from "react-native";
+
 function ThemedStack() {
-  const { colors } = useTheme();
+  const { colors, mode, toggleTheme } = useTheme();
   return (
     <Stack
       screenOptions={{
         headerStyle: { backgroundColor: colors.header },
         headerTintColor: colors.headerText,
         contentStyle: { backgroundColor: colors.background },
+        headerRight: () => (
+          <Pressable onPress={toggleTheme} style={{ padding: 8 }}>
+            <Text style={{ fontSize: 20 }}>
+              {mode === "dark" ? "☀️" : "🌙"}
+            </Text>
+          </Pressable>
+        ),
       }}
     >
       <Stack.Screen name="index" options={{ title: "Sağlık Monitörü" }} />

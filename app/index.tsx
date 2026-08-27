@@ -13,7 +13,9 @@ export default function MainMenu() {
       style={[styles.container, { backgroundColor: colors.background }]}
       edges={["bottom"]}
     >
-      <Text style={[styles.title, { color: colors.text }]}>Sağlık Monitörü</Text>
+      <Text style={[styles.title, { color: colors.text }]}>
+        Sağlık Monitörü
+      </Text>
       <MenuButton
         label="1. İlaç Yönetimi (Ekle/Düzenle)"
         onPress={() => router.push("/med-menu")}
@@ -26,16 +28,16 @@ export default function MainMenu() {
         label="3. Kayıtları İzle (Loglar)"
         onPress={() => router.push("/log-menu")}
       />
-      <MenuButton
-        label={mode === "dark" ? "☀️ Aydınlık Temaya Geç" : "🌙 Karanlık Temaya Geç"}
-        variant="muted"
-        onPress={toggleTheme}
-      />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 24, justifyContent: "center" },
-  title: { fontSize: 30, fontWeight: "bold", marginBottom: 32, textAlign: "center" },
+  title: {
+    fontSize: 30,
+    fontWeight: "bold",
+    marginBottom: 32,
+    textAlign: "center",
+  },
 });
