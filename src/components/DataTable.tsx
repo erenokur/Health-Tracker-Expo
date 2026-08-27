@@ -5,7 +5,7 @@ import { useTheme } from "../theme/ThemeContext";
 export interface Column<T> {
   header: string;
   flex?: number;
-  render: (row: T) => string;
+  render: (row: T) => React.ReactNode;
 }
 
 interface Props<T> {
@@ -24,11 +24,16 @@ export function DataTable<T>({
   const { colors } = useTheme();
   return (
     <View style={styles.container}>
-      <View style={[styles.headerRow, { backgroundColor: colors.tableHeaderBg }]}>
+      <View
+        style={[styles.headerRow, { backgroundColor: colors.tableHeaderBg }]}
+      >
         {columns.map((col) => (
           <Text
             key={col.header}
-            style={[styles.headerCell, { color: colors.tableHeaderText, flex: col.flex ?? 1 }]}
+            style={[
+              styles.headerCell,
+              { color: colors.tableHeaderText, flex: col.flex ?? 1 },
+            ]}
           >
             {col.header}
           </Text>
@@ -38,19 +43,31 @@ export function DataTable<T>({
         data={data}
         keyExtractor={keyExtractor}
         ListEmptyComponent={
-          <Text style={[styles.empty, { color: colors.tableEmptyText }]}>{emptyLabel}</Text>
+          <Text style={[styles.empty, { color: colors.tableEmptyText }]}>
+            {emptyLabel}
+          </Text>
         }
         renderItem={({ item }) => (
-          <View style={[styles.row, { borderBottomColor: colors.tableRowBorder }]}>
-            {columns.map((col) => (
-              <Text
-                key={col.header}
-                style={[styles.cell, { color: colors.text, flex: col.flex ?? 1 }]}
-                numberOfLines={1}
-              >
-                {col.render(item)}
-              </Text>
-            ))}
+          <View
+            style={[styles.row, { borderBottomColor: colors.tableRowBorder }]}
+          >
+            {columns.map((col) => {
+              const content = col.render(item);
+              return (
+                <View key={col.header} style={{ flex: col.flex ?? 1 }}>
+                  {typeof content === "string" ? (
+                    <Text
+                      style={[styles.cell, { color: colors.text }]}
+                      numberOfLines={1}
+                    >
+                      {content}
+                    </Text>
+                  ) : (
+                    content
+                  )}
+                </View>
+              );
+            })}
           </View>
         )}
       />
@@ -62,7 +79,12 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   headerRow: { flexDirection: "row", paddingVertical: 8, paddingHorizontal: 4 },
   headerCell: { fontWeight: "bold", fontSize: 13 },
-  row: { flexDirection: "row", paddingVertical: 8, paddingHorizontal: 4, borderBottomWidth: 1 },
+  row: {
+    flexDirection: "row",
+    paddingVertical: 8,
+    paddingHorizontal: 4,
+    borderBottomWidth: 1,
+  },
   cell: { fontSize: 13 },
   empty: { textAlign: "center", padding: 20 },
 });

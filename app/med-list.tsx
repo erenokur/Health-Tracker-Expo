@@ -26,7 +26,9 @@ export default function MedListScreen() {
       style={[styles.container, { backgroundColor: colors.background }]}
       edges={["bottom"]}
     >
-      <Text style={[styles.title, { color: colors.text }]}>Kayıtlı İlaçlar (Aktifler Üstte)</Text>
+      <Text style={[styles.title, { color: colors.text }]}>
+        Kayıtlı İlaçlar (Aktifler Üstte)
+      </Text>
       <DataTable
         data={meds}
         keyExtractor={(m) => m.id}
@@ -36,24 +38,25 @@ export default function MedListScreen() {
           { header: "Durum", render: (m) => m.is_active },
           {
             header: "İşlem",
-            render: () => "Düzenle",
+            flex: 0.8,
+            render: (m) => (
+              <Pressable
+                style={[
+                  styles.editBtn,
+                  { backgroundColor: colors.editRowBackground },
+                ]}
+                onPress={() => router.push(`/medication?id=${m.id}`)}
+              >
+                <Text
+                  style={[styles.editBtnText, { color: colors.editRowText }]}
+                >
+                  Düzenle
+                </Text>
+              </Pressable>
+            ),
           },
         ]}
       />
-      {/* Overlay-free approach: render edit buttons separately since DataTable
-          cells are plain text; swap to a custom row renderer if you want the
-          button inline in the same grid as the original Kivy screen. */}
-      {meds.map((m) => (
-        <Pressable
-          key={m.id}
-          style={[styles.editRow, { backgroundColor: colors.editRowBackground }]}
-          onPress={() => router.push(`/medication?id=${m.id}`)}
-        >
-          <Text style={[styles.editRowText, { color: colors.editRowText }]}>
-            Düzenle: {m.name}
-          </Text>
-        </Pressable>
-      ))}
       <MenuButton
         label="Geri Dön"
         variant="muted"
@@ -66,6 +69,11 @@ export default function MedListScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16 },
   title: { fontSize: 20, fontWeight: "bold", marginBottom: 12 },
-  editRow: { padding: 10, borderRadius: 6, marginBottom: 6 },
-  editRowText: { fontWeight: "600" },
+  editBtn: {
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 4,
+    alignItems: "center",
+  },
+  editBtnText: { fontWeight: "600", fontSize: 13 },
 });
