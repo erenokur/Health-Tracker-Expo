@@ -14,8 +14,9 @@ import {
 import { useRouter, useFocusEffect } from "expo-router";
 import { useTheme } from "../src/theme/ThemeContext";
 import { useLanguage } from "../src/i18n/LanguageContext";
-import { listBpLogs, BpLog } from "../src/db/bpLogs";
-import { listMedLogs, MedLog } from "../src/db/medLogs";
+import { listBpLogs } from "../src/db/bpLogs";
+import { listMedLogs } from "../src/db/medLogs";
+import { BpLog, MedLog } from "../src/types";
 import { DataTable } from "../src/components/DataTable";
 import DateTimePicker from "@react-native-community/datetimepicker";
 

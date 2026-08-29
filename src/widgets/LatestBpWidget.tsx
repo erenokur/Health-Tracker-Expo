@@ -20,84 +20,91 @@ export function LatestBpWidget({ sys, dia, pulse, timestamp }: Props) {
       style={{
         height: "match_parent",
         width: "match_parent",
-        backgroundColor: "#1E293B",
-        borderRadius: 16,
-        padding: 12,
-        justifyContent: "space-between",
-        alignItems: "center",
       }}
       clickAction="OPEN_APP"
     >
       <FlexWidget
-        style={{ alignItems: "center", justifyContent: "center", flex: 1 }}
-      >
-        {hasData ? (
-          <>
-            <TextWidget
-              text={`${sys}/${dia}`}
-              style={{ fontSize: 28, fontWeight: "bold", color: "#ffffff" }}
-            />
-            <TextWidget
-              text={pulse != null ? `Nabız: ${pulse}` : "Nabız: -"}
-              style={{ fontSize: 14, color: "#94a3b8", marginTop: 4 }}
-            />
-            <TextWidget
-              text={timestamp ?? ""}
-              style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}
-            />
-          </>
-        ) : (
-          <TextWidget
-            text="Henüz kayıt yok"
-            style={{ fontSize: 14, color: "#94a3b8" }}
-          />
-        )}
-      </FlexWidget>
-
-      <FlexWidget
         style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
+          height: "match_parent",
           width: "match_parent",
-          marginTop: 8,
+          backgroundColor: "#1E293B",
+          borderRadius: 16,
+          padding: 12,
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
         <FlexWidget
-          clickAction="OPEN_URI"
-          clickActionData={{ uri: "healthtracker://bp-tracking" }}
-          style={{
-            backgroundColor: "#16A34A",
-            paddingHorizontal: 12,
-            paddingVertical: 8,
-            borderRadius: 8,
-            flex: 1,
-            marginRight: 4,
-            alignItems: "center",
-          }}
+          style={{ alignItems: "center", justifyContent: "center", flex: 1 }}
         >
-          <TextWidget
-            text="+ Tansiyon"
-            style={{ color: "#ffffff", fontSize: 13, fontWeight: "bold" }}
-          />
+          {hasData ? (
+            <FlexWidget style={{ alignItems: "center" }}>
+              <TextWidget
+                text={`${sys}/${dia}`}
+                style={{ fontSize: 28, fontWeight: "bold", color: "#ffffff" }}
+              />
+              <TextWidget
+                text={pulse != null ? `Nabız: ${pulse}` : "Nabız: -"}
+                style={{ fontSize: 14, color: "#94a3b8", marginTop: 4 }}
+              />
+              <TextWidget
+                text={timestamp ?? ""}
+                style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}
+              />
+            </FlexWidget>
+          ) : (
+            <TextWidget
+              text="Henüz kayıt yok"
+              style={{ fontSize: 14, color: "#94a3b8" }}
+            />
+          )}
         </FlexWidget>
 
         <FlexWidget
-          clickAction="OPEN_URI"
-          clickActionData={{ uri: "healthtracker://med-tracking" }}
           style={{
-            backgroundColor: "#0284c7",
-            paddingHorizontal: 12,
-            paddingVertical: 8,
-            borderRadius: 8,
-            flex: 1,
-            marginLeft: 4,
-            alignItems: "center",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            width: "match_parent",
+            marginTop: 8,
           }}
         >
-          <TextWidget
-            text="+ İlaç"
-            style={{ color: "#ffffff", fontSize: 13, fontWeight: "bold" }}
-          />
+          <FlexWidget
+            clickAction="OPEN_URI"
+            clickActionData={{ uri: "healthtracker://bp-tracking" }}
+            style={{
+              backgroundColor: "#16A34A",
+              paddingHorizontal: 12,
+              paddingVertical: 8,
+              borderRadius: 8,
+              flex: 1,
+              marginRight: 4,
+              alignItems: "center",
+            }}
+          >
+            <TextWidget
+              text="+ Tansiyon"
+              style={{ color: "#ffffff", fontSize: 13, fontWeight: "bold" }}
+            />
+          </FlexWidget>
+
+          <FlexWidget
+            clickAction="OPEN_URI"
+            clickActionData={{ uri: "healthtracker://med-tracking" }}
+            style={{
+              backgroundColor: "#0284c7",
+              paddingHorizontal: 12,
+              paddingVertical: 8,
+              borderRadius: 8,
+              flex: 1,
+              marginLeft: 4,
+              alignItems: "center",
+            }}
+          >
+            <TextWidget
+              text="+ İlaç"
+              style={{ color: "#ffffff", fontSize: 13, fontWeight: "bold" }}
+            />
+          </FlexWidget>
         </FlexWidget>
       </FlexWidget>
     </FlexWidget>
