@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Text, TextInput, ScrollView, StyleSheet, Alert } from "react-native";
+import {
+  Text,
+  TextInput,
+  ScrollView,
+  StyleSheet,
+  Alert,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { requestWidgetUpdate } from "react-native-android-widget";
@@ -59,17 +66,45 @@ export default function BpTrackingScreen() {
   }
 
   return (
-    <SafeAreaView style={[styles.flex, { backgroundColor: colors.background }]} edges={["bottom"]}>
+    <SafeAreaView
+      style={[styles.flex, { backgroundColor: colors.background }]}
+      edges={["bottom"]}
+    >
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={[styles.title, { color: colors.text }]}>{t("bpTracking.title")}</Text>
-        <DateTimePickerButton
-          label={t("common.dateAndTime")}
-          date={logDate}
-          onChange={setLogDate}
-        />
+        <Text style={[styles.title, { color: colors.text }]}>
+          {t("bpTracking.title")}
+        </Text>
+
+        <View style={styles.dateRow}>
+          <View style={styles.flex}>
+            <DateTimePickerButton
+              label={t("common.date")}
+              mode="date"
+              date={logDate}
+              onChange={setLogDate}
+            />
+          </View>
+          <View style={{ width: 12 }} />
+          <View style={styles.flex}>
+            <DateTimePickerButton
+              label={t("common.time")}
+              mode="time"
+              date={logDate}
+              onChange={setLogDate}
+            />
+          </View>
+        </View>
+
         <TextInput
           placeholderTextColor={colors.textMuted}
-          style={[styles.input, { color: colors.text, backgroundColor: colors.inputBackground, borderColor: colors.border }]}
+          style={[
+            styles.input,
+            {
+              color: colors.text,
+              backgroundColor: colors.inputBackground,
+              borderColor: colors.border,
+            },
+          ]}
           placeholder={t("bpTracking.sysPlaceholder")}
           keyboardType="number-pad"
           value={sys}
@@ -77,7 +112,14 @@ export default function BpTrackingScreen() {
         />
         <TextInput
           placeholderTextColor={colors.textMuted}
-          style={[styles.input, { color: colors.text, backgroundColor: colors.inputBackground, borderColor: colors.border }]}
+          style={[
+            styles.input,
+            {
+              color: colors.text,
+              backgroundColor: colors.inputBackground,
+              borderColor: colors.border,
+            },
+          ]}
           placeholder={t("bpTracking.diaPlaceholder")}
           keyboardType="number-pad"
           value={dia}
@@ -85,7 +127,14 @@ export default function BpTrackingScreen() {
         />
         <TextInput
           placeholderTextColor={colors.textMuted}
-          style={[styles.input, { color: colors.text, backgroundColor: colors.inputBackground, borderColor: colors.border }]}
+          style={[
+            styles.input,
+            {
+              color: colors.text,
+              backgroundColor: colors.inputBackground,
+              borderColor: colors.border,
+            },
+          ]}
           placeholder={t("bpTracking.pulsePlaceholder")}
           keyboardType="number-pad"
           value={pulse}
@@ -93,12 +142,23 @@ export default function BpTrackingScreen() {
         />
         <TextInput
           placeholderTextColor={colors.textMuted}
-          style={[styles.input, { color: colors.text, backgroundColor: colors.inputBackground, borderColor: colors.border }]}
+          style={[
+            styles.input,
+            {
+              color: colors.text,
+              backgroundColor: colors.inputBackground,
+              borderColor: colors.border,
+            },
+          ]}
           placeholder={t("bpTracking.notePlaceholder")}
           value={note}
           onChangeText={setNote}
         />
-        <MenuButton label={t("bpTracking.save")} variant="primary" onPress={handleSave} />
+        <MenuButton
+          label={t("bpTracking.save")}
+          variant="primary"
+          onPress={handleSave}
+        />
         <MenuButton
           label={t("common.back")}
           variant="muted"
@@ -112,7 +172,13 @@ export default function BpTrackingScreen() {
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   container: { padding: 20 },
-  title: { fontSize: 28, fontWeight: "bold", marginBottom: 20, textAlign: "center" },
+  dateRow: { flexDirection: "row", justifyContent: "space-between" },
+  title: {
+    fontSize: 28,
+    fontWeight: "bold",
+    marginBottom: 20,
+    textAlign: "center",
+  },
   input: {
     borderWidth: 1,
     borderRadius: 8,
