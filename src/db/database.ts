@@ -53,6 +53,17 @@ export function initDb() {
       key TEXT PRIMARY KEY,
       value TEXT NOT NULL
     );
+
+    CREATE TABLE IF NOT EXISTS reminders (
+      id TEXT PRIMARY KEY,
+      type TEXT NOT NULL,        -- 'bp' | 'medication'
+      med_name TEXT,             -- only set when type = 'medication'
+      weekday INTEGER NOT NULL,  -- 1-7, 1 = Sunday (matches expo-notifications)
+      hour INTEGER NOT NULL,
+      minute INTEGER NOT NULL,
+      notification_id TEXT NOT NULL,
+      created_at TEXT NOT NULL
+    );
   `);
 
   // Seed default categories (matches original app), ignoring if already present.

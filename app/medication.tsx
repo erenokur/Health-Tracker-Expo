@@ -8,11 +8,13 @@ import { listCategories, ensureCategory } from "../src/db/categories";
 import { getMedication, saveMedication } from "../src/db/medications";
 import { ActiveStatus, MealType } from "../src/types";
 import { useTheme } from "../src/theme/ThemeContext";
+import { useLanguage } from "../src/i18n/LanguageContext";
 
 export default function MedicationScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const router = useRouter();
   const { colors } = useTheme();
+  const { t } = useLanguage();
   const editing = Boolean(id);
 
   const [categories, setCategories] = useState<string[]>([]);
@@ -48,11 +50,11 @@ export default function MedicationScreen() {
   function handleSave() {
     const finalCategory = newCategory.trim() || category;
     if (!finalCategory) {
-      Alert.alert("Hata", "Lütfen bir kategori seçin veya yazın.");
+      Alert.alert(t("common.error"), t("medication.errNoCategory"));
       return;
     }
     if (!name.trim()) {
-      Alert.alert("Hata", "İlaç adı boş olamaz.");
+      Alert.alert(t("common.error"), t("medication.errNoName"));
       return;
     }
 
@@ -74,8 +76,8 @@ export default function MedicationScreen() {
     );
 
     Alert.alert(
-      "Başarılı",
-      editing ? `${name} güncellendi.` : `${name} başarıyla eklendi.`,
+      t("common.success"),
+      `${name} ${editing ? t("medication.updatedMsg") : t("medication.addedMsg")}`,
     );
     router.replace(editing ? "/med-list" : "/med-menu");
   }
@@ -84,18 +86,18 @@ export default function MedicationScreen() {
     <SafeAreaView style={[styles.flex, { backgroundColor: colors.background }]} edges={["bottom"]}>
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={[styles.title, { color: colors.text }]}>
-          {editing ? "İlacı Düzenle" : "Yeni İlaç Ekle"}
+          {editing ? t("medication.titleEdit") : t("medication.titleAdd")}
         </Text>
 
         <TextInput
           placeholderTextColor={colors.textMuted}
           style={[styles.input, { color: colors.text, backgroundColor: colors.inputBackground, borderColor: colors.border }]}
-          placeholder="İlaç Adı"
+          placeholder={t("medication.name")}
           value={name}
           onChangeText={setName}
         />
 
-        <Text style={[styles.label, { color: colors.text }]}>Kategori</Text>
+        <Text style={[styles.label, { color: colors.text }]}>{t("medication.category")}</Text>
         <Picker
           selectedValue={category}
           onValueChange={setCategory}
@@ -108,36 +110,36 @@ export default function MedicationScreen() {
         <TextInput
           placeholderTextColor={colors.textMuted}
           style={[styles.input, { color: colors.text, backgroundColor: colors.inputBackground, borderColor: colors.border }]}
-          placeholder="Veya Yeni Kategori Yaz"
+          placeholder={t("medication.newCategoryPlaceholder")}
           value={newCategory}
           onChangeText={setNewCategory}
         />
 
-        <Text style={[styles.label, { color: colors.text }]}>Durum</Text>
+        <Text style={[styles.label, { color: colors.text }]}>{t("medication.status")}</Text>
         <Picker
           selectedValue={status}
           onValueChange={(v) => setStatus(v as ActiveStatus)}
           style={[styles.picker, { color: colors.text, backgroundColor: colors.inputBackground }]}
         >
-          <Picker.Item label="Aktif" value="Aktif" />
-          <Picker.Item label="Pasif" value="Pasif" />
+          <Picker.Item label={t("medication.statusActive")} value="Aktif" />
+          <Picker.Item label={t("medication.statusInactive")} value="Pasif" />
         </Picker>
 
-        <Text style={[styles.label, { color: colors.text }]}>Açlık/Tokluk</Text>
+        <Text style={[styles.label, { color: colors.text }]}>{t("medication.mealType")}</Text>
         <Picker
           selectedValue={mealType}
           onValueChange={(v) => setMealType(v as MealType)}
           style={[styles.picker, { color: colors.text, backgroundColor: colors.inputBackground }]}
         >
-          <Picker.Item label="Aç" value="Aç" />
-          <Picker.Item label="Tok" value="Tok" />
-          <Picker.Item label="Farketmez" value="Farketmez" />
+          <Picker.Item label={t("medication.mealHungry")} value="Aç" />
+          <Picker.Item label={t("medication.mealFull")} value="Tok" />
+          <Picker.Item label={t("medication.mealDoesntMatter")} value="Farketmez" />
         </Picker>
 
         <TextInput
           placeholderTextColor={colors.textMuted}
           style={[styles.input, { color: colors.text, backgroundColor: colors.inputBackground, borderColor: colors.border }]}
-          placeholder="Günlük Doz (Örn: 2)"
+          placeholder={t("medication.dailyDose")}
           keyboardType="number-pad"
           value={dailyDose}
           onChangeText={setDailyDose}
@@ -145,7 +147,7 @@ export default function MedicationScreen() {
         <TextInput
           placeholderTextColor={colors.textMuted}
           style={[styles.input, { color: colors.text, backgroundColor: colors.inputBackground, borderColor: colors.border }]}
-          placeholder="Özel Notlar"
+          placeholder={t("medication.notes")}
           value={notes}
           onChangeText={setNotes}
         />
@@ -156,19 +158,19 @@ export default function MedicationScreen() {
             styles.multiline,
             { color: colors.text, backgroundColor: colors.inputBackground, borderColor: colors.border },
           ]}
-          placeholder="Açıklama (Ne işe yarar?)"
+          placeholder={t("medication.description")}
           value={description}
           onChangeText={setDescription}
           multiline
         />
 
         <MenuButton
-          label={editing ? "Güncelle" : "Kaydet"}
+          label={editing ? t("medication.update") : t("medication.save")}
           variant="primary"
           onPress={handleSave}
         />
         <MenuButton
-          label="İptal / Geri"
+          label={t("medication.cancelBack")}
           variant="muted"
           onPress={() => router.back()}
         />

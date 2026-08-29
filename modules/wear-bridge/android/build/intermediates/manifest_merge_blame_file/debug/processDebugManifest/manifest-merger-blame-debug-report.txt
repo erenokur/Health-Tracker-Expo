@@ -1,0 +1,24 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="expo.modules.wearbridge" >
+4
+5    <uses-sdk android:minSdkVersion="24" />
+6
+7    <application>
+7-->/home/eren/Repos/expo-health-tracker/modules/wear-bridge/android/src/main/AndroidManifest.xml:3:5-11:19
+8        <service
+8-->/home/eren/Repos/expo-health-tracker/modules/wear-bridge/android/src/main/AndroidManifest.xml:4:9-10:19
+9            android:name="expo.modules.wearbridge.WearMessageListenerService"
+9-->/home/eren/Repos/expo-health-tracker/modules/wear-bridge/android/src/main/AndroidManifest.xml:5:13-78
+10            android:exported="true" >
+10-->/home/eren/Repos/expo-health-tracker/modules/wear-bridge/android/src/main/AndroidManifest.xml:6:13-36
+11            <intent-filter>
+11-->/home/eren/Repos/expo-health-tracker/modules/wear-bridge/android/src/main/AndroidManifest.xml:7:13-9:29
+12                <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
+12-->/home/eren/Repos/expo-health-tracker/modules/wear-bridge/android/src/main/AndroidManifest.xml:8:17-88
+12-->/home/eren/Repos/expo-health-tracker/modules/wear-bridge/android/src/main/AndroidManifest.xml:8:25-85
+13            </intent-filter>
+14        </service>
+15    </application>
+16
+17</manifest>

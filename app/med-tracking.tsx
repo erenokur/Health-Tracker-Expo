@@ -9,10 +9,12 @@ import { addMedLog } from "../src/db/medLogs";
 import { UsageMeal } from "../src/types";
 import { DateTimePickerButton } from "../src/components/DateTimePickerButton";
 import { useTheme } from "../src/theme/ThemeContext";
+import { useLanguage } from "../src/i18n/LanguageContext";
 
 export default function MedTrackingScreen() {
   const router = useRouter();
   const { colors } = useTheme();
+  const { t } = useLanguage();
   const [meds, setMeds] = useState<string[]>([]);
   const [selectedMed, setSelectedMed] = useState<string>("");
   const [meal, setMeal] = useState<UsageMeal>("Aç");
@@ -26,55 +28,49 @@ export default function MedTrackingScreen() {
 
   function handleSave() {
     if (!selectedMed) {
-      Alert.alert("Hata", "Lütfen bir ilaç seçin.");
+      Alert.alert(t("common.error"), t("medTracking.errNoMed"));
       return;
     }
     addMedLog(selectedMed, meal, logDate);
-    Alert.alert("Başarılı", `${selectedMed} içildi olarak kaydedildi.`);
+    Alert.alert(t("common.success"), `${selectedMed} ${t("medTracking.savedMsg")}`);
     router.push("/tracking-menu");
   }
 
   return (
     <SafeAreaView style={[styles.flex, { backgroundColor: colors.background }]} edges={["bottom"]}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={[styles.title, { color: colors.text }]}>İlaç İçildi Kaydı</Text>
+        <Text style={[styles.title, { color: colors.text }]}>{t("medTracking.title")}</Text>
         <DateTimePickerButton
-          label="Tarih ve Saat"
+          label={t("common.dateAndTime")}
           date={logDate}
           onChange={setLogDate}
         />
 
-        <Text style={[styles.label, { color: colors.text }]}>
-          Kullanılan İlacı Seçiniz (Sadece Aktifler):
-        </Text>
+        <Text style={[styles.label, { color: colors.text }]}>{t("medTracking.pickMed")}</Text>
         <Picker
           selectedValue={selectedMed}
           onValueChange={setSelectedMed}
           style={[styles.picker, { color: colors.text, backgroundColor: colors.inputBackground }]}
         >
-          {meds.length === 0 && <Picker.Item label="Aktif ilaç yok" value="" />}
+          {meds.length === 0 && <Picker.Item label={t("medTracking.noActiveMed")} value="" />}
           {meds.map((m) => (
             <Picker.Item key={m} label={m} value={m} />
           ))}
         </Picker>
 
-        <Text style={[styles.label, { color: colors.text }]}>Açlık/Tokluk Durumu:</Text>
+        <Text style={[styles.label, { color: colors.text }]}>{t("medTracking.mealStatus")}</Text>
         <Picker
           selectedValue={meal}
           onValueChange={(v) => setMeal(v as UsageMeal)}
           style={[styles.picker, { color: colors.text, backgroundColor: colors.inputBackground }]}
         >
-          <Picker.Item label="Aç" value="Aç" />
-          <Picker.Item label="Tok" value="Tok" />
+          <Picker.Item label={t("medication.mealHungry")} value="Aç" />
+          <Picker.Item label={t("medication.mealFull")} value="Tok" />
         </Picker>
 
+        <MenuButton label={t("medTracking.save")} variant="primary" onPress={handleSave} />
         <MenuButton
-          label="İÇİLDİ OLARAK KAYDET"
-          variant="primary"
-          onPress={handleSave}
-        />
-        <MenuButton
-          label="Geri Dön"
+          label={t("common.back")}
           variant="muted"
           onPress={() => router.push("/tracking-menu")}
         />

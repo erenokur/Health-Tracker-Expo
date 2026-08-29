@@ -2,14 +2,16 @@ import { db } from "./database";
 import { newId, nowIso, nowDisplay } from "./uuid";
 import { MedLog, UsageMeal } from "../types";
 
-export function addMedLog(
-  medName: string,
-  meal: UsageMeal,
-  customDate?: Date,
-): void {
-  const tDisplay = customDate
-    ? `${customDate.getFullYear()}-${String(customDate.getMonth() + 1).padStart(2, "0")}-${String(customDate.getDate()).padStart(2, "0")} ${String(customDate.getHours()).padStart(2, "0")}:${String(customDate.getMinutes()).padStart(2, "0")}`
-    : nowDisplay();
+function formatTimestamp(date: Date): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(
+    date.getDate(),
+  ).padStart(2, "0")} ${String(date.getHours()).padStart(2, "0")}:${String(
+    date.getMinutes(),
+  ).padStart(2, "0")}:${String(date.getSeconds()).padStart(2, "0")}`;
+}
+
+export function addMedLog(medName: string, meal: UsageMeal, customDate?: Date): void {
+  const tDisplay = customDate ? formatTimestamp(customDate) : nowDisplay();
 
   db.runSync(
     `INSERT INTO med_logs (id, timestamp, med_name, meal_type, updated_at, deleted, synced)
@@ -18,29 +20,58 @@ export function addMedLog(
   );
 }
 
-function buildBound(date: Date, isStart: boolean): string {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-  const d = String(date.getDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
+export function getMedLog(id: string): MedLog | null {
+  return db.getFirstSync<MedLog>("SELECT * FROM med_logs WHERE id = ?", [id]);
 }
 
-export function listMedLogs(start: Date, end: Date): MedLog[] {
+export function updateMedLog(
+  id: string,
+  medName: string,
+  meal: UsageMeal,
+  customDate?: Date,
+): void {
+  const tDisplay = customDate ? formatTimestamp(customDate) : nowDisplay();
+  db.runSync(
+    `UPDATE med_logs
+     SET timestamp = ?, med_name = ?, meal_type = ?, updated_at = ?, synced = 0
+     WHERE id = ?`,
+    [tDisplay, medName, meal, nowIso(), id],
+  );
+}
+
+export function deleteMedLog(id: string): void {
+  db.runSync("UPDATE med_logs SET deleted = 1, updated_at = ?, synced = 0 WHERE id = ?", [
+    nowIso(),
+    id,
+  ]);
+}
+
+export interface MedLogFilter {
+  start: Date;
+  end: Date;
+  medName?: string; // "" or undefined = all medications
+}
+
+export function listMedLogs(filter: MedLogFilter): MedLog[] {
   let query = "SELECT * FROM med_logs WHERE deleted = 0";
   const params: string[] = [];
 
-  const startBound = buildBound(start, true);
-  const endBound = buildBound(end, false);
+  query += " AND timestamp >= ? AND timestamp <= ?";
+  params.push(formatTimestamp(filter.start), formatTimestamp(filter.end));
 
-  if (startBound) {
-    query += " AND date(timestamp) >= ?";
-    params.push(startBound);
+  if (filter.medName) {
+    query += " AND med_name = ?";
+    params.push(filter.medName);
   }
-  if (endBound) {
-    query += " AND date(timestamp) <= ?";
-    params.push(endBound);
-  }
+
   query += " ORDER BY timestamp DESC";
 
   return db.getAllSync<MedLog>(query, params);
+}
+
+export function listDistinctMedLogNames(): string[] {
+  const rows = db.getAllSync<{ med_name: string }>(
+    "SELECT DISTINCT med_name FROM med_logs WHERE deleted = 0 ORDER BY med_name ASC",
+  );
+  return rows.map((r) => r.med_name);
 }

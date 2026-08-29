@@ -4,32 +4,24 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { MenuButton } from "../src/components/MenuButton";
 import { useTheme } from "../src/theme/ThemeContext";
+import { useLanguage } from "../src/i18n/LanguageContext";
 
 import { exportData, importData } from "../src/db/backup";
 
 export default function LogMenu() {
   const router = useRouter();
   const { colors } = useTheme();
+  const { t } = useLanguage();
   return (
     <SafeAreaView
       style={[styles.container, { backgroundColor: colors.background }]}
       edges={["bottom"]}
     >
-      <MenuButton
-        label="Tansiyon Kayıtları"
-        onPress={() => router.push("/bp-logs")}
-      />
-      <MenuButton
-        label="İlaç Kullanım Kayıtları"
-        onPress={() => router.push("/med-logs")}
-      />
-      <MenuButton label="Verileri Yedekle (JSON)" onPress={exportData} />
-      <MenuButton label="Verileri İçe Aktar" onPress={importData} />
-      <MenuButton
-        label="Ana Menüye Dön"
-        variant="muted"
-        onPress={() => router.push("/")}
-      />
+      <MenuButton label={t("logMenu.bp")} onPress={() => router.push("/bp-logs")} />
+      <MenuButton label={t("logMenu.med")} onPress={() => router.push("/med-logs")} />
+      <MenuButton label={t("logMenu.export")} onPress={exportData} />
+      <MenuButton label={t("logMenu.import")} onPress={importData} />
+      <MenuButton label={t("common.backToMain")} variant="muted" onPress={() => router.push("/")} />
     </SafeAreaView>
   );
 }

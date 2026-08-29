@@ -10,6 +10,7 @@ Requires **Node.js 20+** (Node 22 or 24 recommended) and the **Expo Go** app
 on your phone (SDK 54).
 
 ```bash
+npx expo install expo-notifications
 npm install --legacy-peer-deps
 npx expo start -c
 ```
@@ -250,3 +251,162 @@ eas build --platform android --profile preview
 ```bash
 eas build --platform android --profile production
 ```
+
+## Editing existing log entries
+
+`app/bp-log-edit.tsx` and `app/med-log-edit.tsx` (styled like the medication
+add/edit form) let you fix a mis-typed reading after the fact instead of
+only being able to delete-and-redo. Reachable by tapping any row in the
+Kayıtlar tables (`DataTable` now takes an `onRowPress` prop). Both support
+delete too, with a confirmation prompt. `src/db/bpLogs.ts` /
+`src/db/medLogs.ts` got `get`/`update`/`delete` functions to match.
+
+## Filter panel (collapsible, date+time separate, range filters)
+
+The date range in the log screens now lives inside
+`src/components/CollapsibleSection.tsx` (closed by default) so it doesn't
+dominate the screen. Inside it:
+
+- Date and time are **separate** `DateTimePickerButton`s (`mode="date"` /
+  `mode="time"`) rather than one combined picker, per request.
+- Defaults to the **last 7 days** (`start = today - 7`, `end = today`,
+  full day bounds) rather than "today only."
+- BP screen adds min/max range filters for Sys, Dia, and Pulse.
+- Med screen adds a medication-name filter (populated from
+  `listDistinctMedLogNames()` — every name that's ever actually been
+  logged, not just currently-active medications).
+- The date/time filtering itself moved from date-only (`date(timestamp)`)
+  to full timestamp comparison, so the time-of-day bounds actually matter
+  now instead of being silently ignored.
+
+Table rows now also show the year (`28.08.2026 14:05` instead of the old
+`08-28 14:05`), and columns have both extra padding and a divider line
+between them (`DataTable`'s `cellDivider` style) — the previous layout had
+the date and Sys columns touching with no visual separation.
+
+## Widget fix: transparent buttons
+
+If your home-screen widget ever shows blank/transparent content where
+tapping still opens the app (rather than showing your last reading or the
+quick-add buttons) — that's the widget's JS render silently failing,
+leaving Android's fallback layout visible with only its default click
+intent still wired up. Two changes address this:
+
+1. `app.json`'s widget `minHeight` was bumped to `180dp` to fit the
+   two-row layout (readout + the "+ Tansiyon"/"+ İlaç" quick-action row) —
+   the old `120dp` was sized for the original single-row version.
+2. `widget-task-handler.ts` now wraps the render in try/catch and always
+   calls `renderWidget` with _something_ (a red error widget showing the
+   exception message, as a last resort) instead of letting a thrown error
+   leave you with nothing.
+
+If it's still blank after `expo prebuild -p android --clean` +
+`expo run:android` (needed since the size change is a native config, not
+just JS), run `adb logcat | grep -i ReactNativeJS` right as you place the
+widget — any exception will show up there and point at the real cause.
+
+## Uygulama menüsü, bildirimler, hakkında
+
+Header'da tema düğmesinin yanına bir ☰ menü düğmesi eklendi
+(`app/_layout.tsx`) — `app/app-menu.tsx`'e gider, orada **Bildirimler**
+(üstte) ve **Uygulama Hakkında** (altta) seçenekleri var.
+
+- **`app/notifications.tsx`**: haftalık tekrarlayan tansiyon/ilaç
+  hatırlatıcıları ekleyip silebileceğiniz ekran. Her hatırlatıcı tek bir
+  gün + saat'e bağlı — aynı gün için birden fazla tansiyon hatırlatıcısı,
+  ya da aynı ilaç için birden fazla hatırlatıcı eklemekte hiçbir kısıtlama
+  yok (`src/db/reminders.ts`'de uniqueness constraint yok, her ekleme yeni
+  bir satır). Native tarafı `expo-notifications` (`src/notifications/
+scheduler.ts`) ile `SchedulableTriggerInputTypes.WEEKLY` trigger'ı
+  kullanıyor — sadece Android için (weekday 1=Pazar...7=Cumartesi).
+  Bildirim izni ilk hatırlatıcı eklenmeye çalışıldığında isteniyor
+  (uygulama açılışında değil).
+- **`app/about.tsx`**: uygulama adı, sürüm numarası (`expo-constants`
+  üzerinden `app.json`'daki `version` alanından), paket adı.
+
+### ⚠️ Gerekli manuel adım: `expo-notifications` kurulumu
+
+Bu SDK 54 projesine `expo-notifications`'ı **elle eklemedim** —
+`package.json`'a sabit bir versiyon yazmak yerine, doğru SDK-uyumlu
+versiyonu `expo install`'un kendisinin çözmesini istiyoruz (bu projede
+daha önce yanlış tahmin edilen versiyonlar birkaç kez soruna yol açtı):
+
+```bash
+npx expo install expo-notifications
+npx expo prebuild -p android --clean
+npx expo run:android
+```
+
+`app.json`'a zaten eklendi: `"expo-notifications"` plugin girişi ve
+Android 12+ için `SCHEDULE_EXACT_ALARM` izni. `npm install` + yukarıdaki
+üç komut yeterli.
+
+## Dil desteği (Türkçe / İngilizce) ve Ayarlar sayfası
+
+`src/i18n/translations.ts` her ekranda kullanılan her string için TR/EN
+karşılığını içeren düz bir sözlük; `src/i18n/LanguageContext.tsx` da
+`ThemeContext` ile aynı desende (`settings` tablosunda kalıcı, `useLanguage()`
+hook'u ile `{ language, setLanguage, t }` döndürür). **Uygulamadaki her
+ekran** artık `t("...")` kullanıyor — hardcoded Türkçe metin kalmadı.
+
+Yeni **`app/settings.tsx`** ekranı (☰ menü → Ayarlar):
+
+- **Dil** grubu: Türkçe/İngilizce arasında anlık geçiş (kaydet butonuna
+  basmadan hemen uygulanır — tema geçişiyle aynı davranış).
+- **Bulut Senkronizasyonu** grubu: web adresi + API token alanları,
+  ileride Faz 4 (PHP API sync) için hazır bekliyor. Token bir kez
+  kaydedildikten sonra `***` olarak gösteriliyor; değiştirmek için
+  "Değiştir" butonuna basmak gerekiyor (`src/db/cloudSettings.ts`, yine
+  `settings` tablosunu kullanıyor — yeni bir tabloya gerek yok).
+- İki grup görsel olarak `src/components/GroupBox.tsx` ile ayrılmış
+  (başlıklı, çerçeveli kutular — `CollapsibleSection`'ın aksine
+  açılır/kapanır değil, her zaman görünür).
+- Sayfa `ScrollView` içinde, küçük ekranlarda kayabiliyor.
+- En altta **Kaydet** butonu bulut ayarlarını commit ediyor ve
+  "Ayarlar kaydedildi." onayı gösteriyor.
+
+Yeni bir ekran/metin eklerken: `translations.ts`'e hem `tr` hem `en`
+anahtarını ekleyip ekranda `useLanguage().t("anahtar")` kullanmak yeterli.
+
+## Wear OS companion app (`modules/wear-bridge`, sibling `wear-app/` project)
+
+The actual watch app lives in a **separate project folder** (`wear-app/`,
+delivered alongside this project, not inside it) — it's a standalone
+Kotlin/Compose Wear OS app since Expo/React Native can't target Wear OS.
+See its own README for build/install steps.
+
+This project only contains the **receiving end**: `modules/wear-bridge` is
+a local Expo native module that:
+
+1. Registers a `WearableListenerService` (Android's system entry point for
+   Data Layer messages) via its own `AndroidManifest.xml`, merged into the
+   app's manifest automatically during `expo prebuild`.
+2. Forwards received messages (`/bp-log`, `/med-log` paths, JSON payloads)
+   to JS via `expo-modules-core` events.
+3. `src/wear/useWearBridgeListener.tsx` (called once from `app/_layout.tsx`)
+   subscribes to those events and calls the same `addBpLog`/`addMedLog`
+   functions the phone's own screens use — so watch entries are
+   indistinguishable from phone entries once saved, and the BP widget
+   refreshes automatically too.
+
+### Setup steps
+
+```bash
+npm install    # picks up the "wear-bridge": "file:./modules/wear-bridge" link
+npx expo prebuild -p android --clean
+npx expo run:android
+```
+
+No package name or signing certificate needs to match between this app and
+the Wear OS app — that's only required for Play Store auto-install/
+companion provisioning, not for a `WearableListenerService` registered for
+`BIND_LISTENER` to receive a plain `MessageClient` message from any
+connected node.
+
+### Debugging tip
+
+If watch messages never arrive: check `adb logcat | grep -i wearable` on
+the **phone** while tapping KAYDET on the watch — Google Play Services logs
+Data Layer connection/message events there, and it's usually obvious
+whether the message left the watch vs. never made it to the listener
+service.

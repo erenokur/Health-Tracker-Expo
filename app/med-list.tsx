@@ -7,14 +7,14 @@ import { MenuButton } from "../src/components/MenuButton";
 import { listMedications } from "../src/db/medications";
 import { Medication } from "../src/types";
 import { useTheme } from "../src/theme/ThemeContext";
+import { useLanguage } from "../src/i18n/LanguageContext";
 
 export default function MedListScreen() {
   const router = useRouter();
   const { colors } = useTheme();
+  const { t } = useLanguage();
   const [meds, setMeds] = useState<Medication[]>([]);
 
-  // Reload every time the screen gains focus, so edits made in the form
-  // (and returning via router.back()) show up immediately — no manual refresh needed.
   useFocusEffect(
     useCallback(() => {
       setMeds(listMedications());
@@ -27,17 +27,17 @@ export default function MedListScreen() {
       edges={["bottom"]}
     >
       <Text style={[styles.title, { color: colors.text }]}>
-        Kayıtlı İlaçlar (Aktifler Üstte)
+        {t("medList.title")}
       </Text>
       <DataTable
         data={meds}
         keyExtractor={(m) => m.id}
         columns={[
-          { header: "İlaç Adı", render: (m) => m.name },
-          { header: "Kategori", render: (m) => m.category },
-          { header: "Durum", render: (m) => m.is_active },
+          { header: t("medList.colName"), render: (m) => m.name },
+          { header: t("medList.colCategory"), render: (m) => m.category },
+          { header: t("medList.colStatus"), render: (m) => m.is_active },
           {
-            header: "İşlem",
+            header: t("medList.colAction"),
             flex: 0.8,
             render: (m) => (
               <Pressable
@@ -50,7 +50,7 @@ export default function MedListScreen() {
                 <Text
                   style={[styles.editBtnText, { color: colors.editRowText }]}
                 >
-                  Düzenle
+                  {t("medList.edit")}
                 </Text>
               </Pressable>
             ),
@@ -58,7 +58,7 @@ export default function MedListScreen() {
         ]}
       />
       <MenuButton
-        label="Geri Dön"
+        label={t("common.back")}
         variant="muted"
         onPress={() => router.push("/med-menu")}
       />
@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     borderRadius: 4,
     alignItems: "center",
+    alignSelf: "center",
   },
   editBtnText: { fontWeight: "600", fontSize: 13 },
 });

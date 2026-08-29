@@ -11,7 +11,10 @@
       "package": "com.yourname.healthtracker",
       "adaptiveIcon": {
         "backgroundColor": "#1E293B"
-      }
+      },
+      "permissions": [
+        "android.permission.SCHEDULE_EXACT_ALARM"
+      ]
     },
     "ios": {
       "bundleIdentifier": "com.yourname.healthtracker",
@@ -27,14 +30,15 @@
               "name": "LatestBp",
               "label": "Son Tansiyon",
               "minWidth": "250dp",
-              "minHeight": "120dp",
+              "minHeight": "180dp",
               "description": "En son tansiyon ölçümünü gösterir",
               "previewImage": "./assets/widget-preview/latest-bp.png",
               "updatePeriodMillis": 1800000
             }
           ]
         }
-      ]
+      ],
+      "expo-notifications"
     ],
     "experiments": {
       "typedRoutes": true

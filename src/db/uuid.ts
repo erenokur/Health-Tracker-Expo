@@ -18,3 +18,13 @@ export function nowDisplay(): string {
     d.getHours()
   )}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
 }
+
+// Parses "YYYY-MM-DD HH:MM:SS" (our stored display format) back into a Date
+// — not done via `new Date(string)` since Hermes doesn't reliably parse
+// that format.
+export function parseDisplayTimestamp(ts: string): Date {
+  const [datePart, timePart] = ts.split(" ");
+  const [y, m, d] = datePart.split("-").map(Number);
+  const [hh, mm, ss] = (timePart ?? "00:00:00").split(":").map(Number);
+  return new Date(y, m - 1, d, hh, mm, ss ?? 0);
+}

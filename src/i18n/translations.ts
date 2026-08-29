@@ -1,0 +1,343 @@
+export type Language = "tr" | "en";
+
+// Flat key namespace, grouped by screen via key prefix for readability.
+// Add new keys here whenever a screen gains new user-facing text.
+export const translations: Record<Language, Record<string, string>> = {
+  tr: {
+    // Common
+    "common.save": "Kaydet",
+    "common.cancel": "Vazgeç",
+    "common.delete": "Sil",
+    "common.back": "Geri Dön",
+    "common.backToMain": "Ana Menüye Dön",
+    "common.error": "Hata",
+    "common.success": "Başarılı",
+    "common.areYouSure": "Emin misiniz?",
+    "common.all": "Tümü",
+    "common.min": "Min",
+    "common.max": "Max",
+    "common.date": "Tarih",
+    "common.time": "Saat",
+    "common.dateAndTime": "Tarih ve Saat",
+    "common.noRecords": "Kayıt Bulunamadı",
+
+    // Main menu
+    "mainMenu.title": "Sağlık Monitörü",
+    "mainMenu.medManagement": "1. İlaç Yönetimi (Ekle/Düzenle)",
+    "mainMenu.dataEntry": "2. Veri Girişi (Tansiyon / İlaç)",
+    "mainMenu.viewLogs": "3. Kayıtları İzle (Loglar)",
+    "mainMenu.switchToDark": "🌙 Karanlık Temaya Geç",
+    "mainMenu.switchToLight": "☀️ Aydınlık Temaya Geç",
+
+    // App menu (☰)
+    "appMenu.title": "Menü",
+    "appMenu.notifications": "Bildirimler",
+    "appMenu.settings": "Ayarlar",
+    "appMenu.about": "Uygulama Hakkında",
+
+    // Med menu
+    "medMenu.title": "İlaç Yönetimi",
+    "medMenu.addNew": "Yeni İlaç Ekle",
+    "medMenu.editList": "Kayıtlı İlaçları Düzenle",
+
+    // Medication form
+    "medication.titleAdd": "Yeni İlaç Ekle",
+    "medication.titleEdit": "İlacı Düzenle",
+    "medication.name": "İlaç Adı",
+    "medication.category": "Kategori",
+    "medication.newCategoryPlaceholder": "Veya Yeni Kategori Yaz",
+    "medication.status": "Durum",
+    "medication.statusActive": "Aktif",
+    "medication.statusInactive": "Pasif",
+    "medication.mealType": "Açlık/Tokluk",
+    "medication.mealHungry": "Aç",
+    "medication.mealFull": "Tok",
+    "medication.mealDoesntMatter": "Farketmez",
+    "medication.dailyDose": "Günlük Doz (Örn: 2)",
+    "medication.notes": "Özel Notlar",
+    "medication.description": "Açıklama (Ne işe yarar?)",
+    "medication.save": "Kaydet",
+    "medication.update": "Güncelle",
+    "medication.cancelBack": "İptal / Geri",
+    "medication.errNoCategory": "Lütfen bir kategori seçin veya yazın.",
+    "medication.errNoName": "İlaç adı boş olamaz.",
+    "medication.updatedMsg": "güncellendi.",
+    "medication.addedMsg": "başarıyla eklendi.",
+
+    // Med list
+    "medList.title": "Kayıtlı İlaçlar (Aktifler Üstte)",
+    "medList.colName": "İlaç Adı",
+    "medList.colCategory": "Kategori",
+    "medList.colStatus": "Durum",
+    "medList.colAction": "İşlem",
+    "medList.edit": "Düzenle",
+    "medList.editPrefix": "Düzenle: ",
+
+    // Tracking menu
+    "trackingMenu.title": "Veri Girişi",
+    "trackingMenu.bp": "Tansiyon Değeri Gir",
+    "trackingMenu.med": "İlaç Kullanımı Gir",
+
+    // BP tracking
+    "bpTracking.title": "Tansiyon Ekle",
+    "bpTracking.sysPlaceholder": "Büyük Tansiyon (Örn: 120)",
+    "bpTracking.diaPlaceholder": "Küçük Tansiyon (Örn: 80)",
+    "bpTracking.pulsePlaceholder": "Nabız",
+    "bpTracking.notePlaceholder": "Açıklama / Notunuz",
+    "bpTracking.save": "KAYDET",
+    "bpTracking.errRequired": "Büyük ve küçük tansiyon girilmelidir.",
+    "bpTracking.savedMsg": "Tansiyon kaydı eklendi.",
+
+    // Med tracking
+    "medTracking.title": "İlaç İçildi Kaydı",
+    "medTracking.pickMed": "Kullanılan İlacı Seçiniz (Sadece Aktifler):",
+    "medTracking.noActiveMed": "Aktif ilaç yok",
+    "medTracking.mealStatus": "Açlık/Tokluk Durumu:",
+    "medTracking.save": "İÇİLDİ OLARAK KAYDET",
+    "medTracking.errNoMed": "Lütfen bir ilaç seçin.",
+    "medTracking.savedMsg": "içildi olarak kaydedildi.",
+
+    // Log menu
+    "logMenu.title": "Kayıtlar",
+    "logMenu.bp": "Tansiyon Kayıtları",
+    "logMenu.med": "İlaç Kullanım Kayıtları",
+    "logMenu.export": "Verileri Yedekle (JSON)",
+    "logMenu.import": "Verileri İçe Aktar",
+
+    // Filters (shared shape between bp-logs / med-logs)
+    "filter.title": "Filtre",
+    "filter.start": "Başlangıç",
+    "filter.end": "Bitiş",
+    "filter.apply": "FİLTREYİ UYGULA",
+    "filter.sysRange": "Büyük Tansiyon Aralığı",
+    "filter.diaRange": "Küçük Tansiyon Aralığı",
+    "filter.pulseRange": "Nabız Aralığı",
+    "filter.medication": "İlaç",
+
+    // BP logs table
+    "bpLogs.colSys": "Büyük",
+    "bpLogs.colDia": "Küçük",
+    "bpLogs.colPulse": "Nabız",
+
+    // Med logs table
+    "medLogs.colName": "İlaç Adı",
+    "medLogs.colMeal": "Aç/Tok",
+
+    // BP log edit
+    "bpLogEdit.title": "Tansiyon Kaydını Düzenle",
+    "bpLogEdit.deleteConfirm": "Bu tansiyon kaydı silinecek.",
+    "bpLogEdit.updatedMsg": "Kayıt güncellendi.",
+
+    // Med log edit
+    "medLogEdit.title": "İlaç Kaydını Düzenle",
+    "medLogEdit.deleteConfirm": "Bu ilaç kaydı silinecek.",
+    "medLogEdit.updatedMsg": "Kayıt güncellendi.",
+
+    // Notifications
+    "notifications.addBpTitle": "Tansiyon Uyarısı Ekle",
+    "notifications.addMedTitle": "İlaç Uyarısı Ekle",
+    "notifications.day": "Gün",
+    "notifications.medication": "İlaç",
+    "notifications.addBpButton": "Tansiyon Uyarısı Ekle",
+    "notifications.addMedButton": "İlaç Uyarısı Ekle",
+    "notifications.listTitle": "Kayıtlı Uyarılar",
+    "notifications.empty": "Henüz uyarı eklenmedi.",
+    "notifications.permissionNeededTitle": "İzin Gerekli",
+    "notifications.permissionNeededBody":
+      "Hatırlatıcı ekleyebilmek için bildirim izni vermelisiniz.",
+    "notifications.bpTitle": "Tansiyon Ölçüm Zamanı",
+    "notifications.bpBody": "Tansiyonunuzu ölçmeyi unutmayın.",
+    "notifications.medBodyPrefix": "ilacınızı almayı unutmayın.",
+    "notifications.bpLabel": "Tansiyon",
+
+    // Weekdays
+    "weekday.sunday": "Pazar",
+    "weekday.monday": "Pazartesi",
+    "weekday.tuesday": "Salı",
+    "weekday.wednesday": "Çarşamba",
+    "weekday.thursday": "Perşembe",
+    "weekday.friday": "Cuma",
+    "weekday.saturday": "Cumartesi",
+
+    // About
+    "about.version": "Sürüm",
+    "about.packageName": "Paket Adı",
+    "about.platform": "Platform",
+    "about.note":
+      "Bu uygulama tansiyon ve ilaç takibi için kişisel kullanım amacıyla geliştirilmiştir.",
+
+    // Settings
+    "settings.title": "Ayarlar",
+    "settings.languageSection": "Dil",
+    "settings.language": "Uygulama Dili",
+    "settings.languageTurkish": "Türkçe",
+    "settings.languageEnglish": "İngilizce",
+    "settings.cloudSection": "Bulut Senkronizasyonu",
+    "settings.cloudUrl": "Bulut Web Adresi",
+    "settings.cloudUrlPlaceholder": "https://ornek.com/api",
+    "settings.apiToken": "API Token",
+    "settings.apiTokenPlaceholder": "Token girin",
+    "settings.apiTokenChange": "Değiştir",
+    "settings.save": "Kaydet",
+    "settings.saved": "Ayarlar kaydedildi.",
+  },
+  en: {
+    "common.save": "Save",
+    "common.cancel": "Cancel",
+    "common.delete": "Delete",
+    "common.back": "Back",
+    "common.backToMain": "Back to Main Menu",
+    "common.error": "Error",
+    "common.success": "Success",
+    "common.areYouSure": "Are you sure?",
+    "common.all": "All",
+    "common.min": "Min",
+    "common.max": "Max",
+    "common.date": "Date",
+    "common.time": "Time",
+    "common.dateAndTime": "Date and Time",
+    "common.noRecords": "No Records Found",
+
+    "mainMenu.title": "Health Monitor",
+    "mainMenu.medManagement": "1. Medication Management (Add/Edit)",
+    "mainMenu.dataEntry": "2. Data Entry (Blood Pressure / Medication)",
+    "mainMenu.viewLogs": "3. View Logs",
+    "mainMenu.switchToDark": "🌙 Switch to Dark Theme",
+    "mainMenu.switchToLight": "☀️ Switch to Light Theme",
+
+    "appMenu.title": "Menu",
+    "appMenu.notifications": "Notifications",
+    "appMenu.settings": "Settings",
+    "appMenu.about": "About",
+
+    "medMenu.title": "Medication Management",
+    "medMenu.addNew": "Add New Medication",
+    "medMenu.editList": "Edit Saved Medications",
+
+    "medication.titleAdd": "Add New Medication",
+    "medication.titleEdit": "Edit Medication",
+    "medication.name": "Medication Name",
+    "medication.category": "Category",
+    "medication.newCategoryPlaceholder": "Or Type a New Category",
+    "medication.status": "Status",
+    "medication.statusActive": "Active",
+    "medication.statusInactive": "Inactive",
+    "medication.mealType": "Meal Timing",
+    "medication.mealHungry": "Empty Stomach",
+    "medication.mealFull": "Full Stomach",
+    "medication.mealDoesntMatter": "Doesn't Matter",
+    "medication.dailyDose": "Daily Dose (e.g. 2)",
+    "medication.notes": "Notes",
+    "medication.description": "Description (What is it for?)",
+    "medication.save": "Save",
+    "medication.update": "Update",
+    "medication.cancelBack": "Cancel / Back",
+    "medication.errNoCategory": "Please select or type a category.",
+    "medication.errNoName": "Medication name cannot be empty.",
+    "medication.updatedMsg": "updated.",
+    "medication.addedMsg": "added successfully.",
+
+    "medList.title": "Saved Medications (Active on Top)",
+    "medList.colName": "Name",
+    "medList.colCategory": "Category",
+    "medList.colStatus": "Status",
+    "medList.colAction": "Action",
+    "medList.edit": "Edit",
+    "medList.editPrefix": "Edit: ",
+
+    "trackingMenu.title": "Data Entry",
+    "trackingMenu.bp": "Enter Blood Pressure",
+    "trackingMenu.med": "Log Medication Use",
+
+    "bpTracking.title": "Add Blood Pressure",
+    "bpTracking.sysPlaceholder": "Systolic (e.g. 120)",
+    "bpTracking.diaPlaceholder": "Diastolic (e.g. 80)",
+    "bpTracking.pulsePlaceholder": "Pulse",
+    "bpTracking.notePlaceholder": "Description / Note",
+    "bpTracking.save": "SAVE",
+    "bpTracking.errRequired": "Systolic and diastolic values are required.",
+    "bpTracking.savedMsg": "Blood pressure entry saved.",
+
+    "medTracking.title": "Medication Taken",
+    "medTracking.pickMed": "Select the medication taken (active only):",
+    "medTracking.noActiveMed": "No active medication",
+    "medTracking.mealStatus": "Meal status:",
+    "medTracking.save": "SAVE AS TAKEN",
+    "medTracking.errNoMed": "Please select a medication.",
+    "medTracking.savedMsg": "saved as taken.",
+
+    "logMenu.title": "Logs",
+    "logMenu.bp": "Blood Pressure Logs",
+    "logMenu.med": "Medication Logs",
+    "logMenu.export": "Back Up Data (JSON)",
+    "logMenu.import": "Import Data",
+
+    "filter.title": "Filter",
+    "filter.start": "Start",
+    "filter.end": "End",
+    "filter.apply": "APPLY FILTER",
+    "filter.sysRange": "Systolic Range",
+    "filter.diaRange": "Diastolic Range",
+    "filter.pulseRange": "Pulse Range",
+    "filter.medication": "Medication",
+
+    "bpLogs.colSys": "Sys",
+    "bpLogs.colDia": "Dia",
+    "bpLogs.colPulse": "Pulse",
+
+    "medLogs.colName": "Medication",
+    "medLogs.colMeal": "Meal",
+
+    "bpLogEdit.title": "Edit Blood Pressure Entry",
+    "bpLogEdit.deleteConfirm": "This blood pressure entry will be deleted.",
+    "bpLogEdit.updatedMsg": "Entry updated.",
+
+    "medLogEdit.title": "Edit Medication Entry",
+    "medLogEdit.deleteConfirm": "This medication entry will be deleted.",
+    "medLogEdit.updatedMsg": "Entry updated.",
+
+    "notifications.addBpTitle": "Add Blood Pressure Reminder",
+    "notifications.addMedTitle": "Add Medication Reminder",
+    "notifications.day": "Day",
+    "notifications.medication": "Medication",
+    "notifications.addBpButton": "Add Blood Pressure Reminder",
+    "notifications.addMedButton": "Add Medication Reminder",
+    "notifications.listTitle": "Saved Reminders",
+    "notifications.empty": "No reminders added yet.",
+    "notifications.permissionNeededTitle": "Permission Required",
+    "notifications.permissionNeededBody":
+      "You must grant notification permission to add a reminder.",
+    "notifications.bpTitle": "Time to Check Blood Pressure",
+    "notifications.bpBody": "Don't forget to measure your blood pressure.",
+    "notifications.medBodyPrefix": "Don't forget to take your medication:",
+    "notifications.bpLabel": "Blood Pressure",
+
+    "weekday.sunday": "Sunday",
+    "weekday.monday": "Monday",
+    "weekday.tuesday": "Tuesday",
+    "weekday.wednesday": "Wednesday",
+    "weekday.thursday": "Thursday",
+    "weekday.friday": "Friday",
+    "weekday.saturday": "Saturday",
+
+    "about.version": "Version",
+    "about.packageName": "Package Name",
+    "about.platform": "Platform",
+    "about.note":
+      "This app was built for personal blood pressure and medication tracking.",
+
+    "settings.title": "Settings",
+    "settings.languageSection": "Language",
+    "settings.language": "App Language",
+    "settings.languageTurkish": "Turkish",
+    "settings.languageEnglish": "English",
+    "settings.cloudSection": "Cloud Sync",
+    "settings.cloudUrl": "Cloud Web Address",
+    "settings.cloudUrlPlaceholder": "https://example.com/api",
+    "settings.apiToken": "API Token",
+    "settings.apiTokenPlaceholder": "Enter token",
+    "settings.apiTokenChange": "Change",
+    "settings.save": "Save",
+    "settings.saved": "Settings saved.",
+  },
+};

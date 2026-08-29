@@ -8,6 +8,7 @@ import { addBpLog, getLatestBpLog } from "../src/db/bpLogs";
 import { LatestBpWidget } from "../src/widgets/LatestBpWidget";
 import { DateTimePickerButton } from "../src/components/DateTimePickerButton";
 import { useTheme } from "../src/theme/ThemeContext";
+import { useLanguage } from "../src/i18n/LanguageContext";
 
 async function refreshBpWidget() {
   const latest = getLatestBpLog();
@@ -28,6 +29,7 @@ async function refreshBpWidget() {
 export default function BpTrackingScreen() {
   const router = useRouter();
   const { colors } = useTheme();
+  const { t } = useLanguage();
   const [sys, setSys] = useState("");
   const [dia, setDia] = useState("");
   const [pulse, setPulse] = useState("");
@@ -36,7 +38,7 @@ export default function BpTrackingScreen() {
 
   function handleSave() {
     if (!sys || !dia) {
-      Alert.alert("Hata", "Büyük ve küçük tansiyon girilmelidir.");
+      Alert.alert(t("common.error"), t("bpTracking.errRequired"));
       return;
     }
     addBpLog({
@@ -47,7 +49,7 @@ export default function BpTrackingScreen() {
       customDate: logDate,
     });
     refreshBpWidget();
-    Alert.alert("Başarılı", "Tansiyon kaydı eklendi.");
+    Alert.alert(t("common.success"), t("bpTracking.savedMsg"));
     setSys("");
     setDia("");
     setPulse("");
@@ -59,16 +61,16 @@ export default function BpTrackingScreen() {
   return (
     <SafeAreaView style={[styles.flex, { backgroundColor: colors.background }]} edges={["bottom"]}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={[styles.title, { color: colors.text }]}>Tansiyon Ekle</Text>
+        <Text style={[styles.title, { color: colors.text }]}>{t("bpTracking.title")}</Text>
         <DateTimePickerButton
-          label="Tarih ve Saat"
+          label={t("common.dateAndTime")}
           date={logDate}
           onChange={setLogDate}
         />
         <TextInput
           placeholderTextColor={colors.textMuted}
           style={[styles.input, { color: colors.text, backgroundColor: colors.inputBackground, borderColor: colors.border }]}
-          placeholder="Büyük Tansiyon (Örn: 120)"
+          placeholder={t("bpTracking.sysPlaceholder")}
           keyboardType="number-pad"
           value={sys}
           onChangeText={setSys}
@@ -76,7 +78,7 @@ export default function BpTrackingScreen() {
         <TextInput
           placeholderTextColor={colors.textMuted}
           style={[styles.input, { color: colors.text, backgroundColor: colors.inputBackground, borderColor: colors.border }]}
-          placeholder="Küçük Tansiyon (Örn: 80)"
+          placeholder={t("bpTracking.diaPlaceholder")}
           keyboardType="number-pad"
           value={dia}
           onChangeText={setDia}
@@ -84,7 +86,7 @@ export default function BpTrackingScreen() {
         <TextInput
           placeholderTextColor={colors.textMuted}
           style={[styles.input, { color: colors.text, backgroundColor: colors.inputBackground, borderColor: colors.border }]}
-          placeholder="Nabız"
+          placeholder={t("bpTracking.pulsePlaceholder")}
           keyboardType="number-pad"
           value={pulse}
           onChangeText={setPulse}
@@ -92,13 +94,13 @@ export default function BpTrackingScreen() {
         <TextInput
           placeholderTextColor={colors.textMuted}
           style={[styles.input, { color: colors.text, backgroundColor: colors.inputBackground, borderColor: colors.border }]}
-          placeholder="Açıklama / Notunuz"
+          placeholder={t("bpTracking.notePlaceholder")}
           value={note}
           onChangeText={setNote}
         />
-        <MenuButton label="KAYDET" variant="primary" onPress={handleSave} />
+        <MenuButton label={t("bpTracking.save")} variant="primary" onPress={handleSave} />
         <MenuButton
-          label="Geri Dön"
+          label={t("common.back")}
           variant="muted"
           onPress={() => router.push("/tracking-menu")}
         />
