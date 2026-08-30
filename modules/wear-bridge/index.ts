@@ -1,4 +1,8 @@
-import { requireNativeModule, EventEmitter, Subscription } from "expo-modules-core";
+import {
+  requireNativeModule,
+  EventEmitter,
+  Subscription,
+} from "expo-modules-core";
 
 const WearBridge = requireNativeModule("WearBridge");
 const emitter = new EventEmitter(WearBridge as any);
@@ -34,4 +38,17 @@ export function addMedMessageListener(
   listener: (event: WearMedMessage) => void,
 ): Subscription {
   return emitter.addListener("onWearMedLog", listener);
+}
+
+/**
+ * Pushes the active medication name list to the paired Wear OS watch via
+ * DataClient. The watch will display this as a chip picker in MedScreen.
+ *
+ * Call this whenever the user's active medication list changes
+ * (add, remove, activate, or deactivate a medication).
+ *
+ * @param names - Array of active medication name strings, e.g. ["Aspirin", "Metformin"]
+ */
+export async function syncMedicineList(names: string[]): Promise<void> {
+  return WearBridge.syncMedicineList(names);
 }
