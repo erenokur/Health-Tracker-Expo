@@ -41,10 +41,8 @@ class WearMessageListenerService : WearableListenerService() {
      */
     private suspend fun pushMedListToWatch(context: Context) {
         try {
-            val dbFile = java.io.File(context.filesDir, "SQLite/health_monitor.db")
             val db = android.database.sqlite.SQLiteDatabase.openDatabase(
                 context.getDatabasePath("health_tracker.db").absolutePath,
-                dbFile.absolutePath,
                 null,
                 android.database.sqlite.SQLiteDatabase.OPEN_READONLY,
             )
