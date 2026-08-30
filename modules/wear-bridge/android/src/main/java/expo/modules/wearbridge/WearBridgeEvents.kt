@@ -1,7 +1,5 @@
 package expo.modules.wearbridge
 
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 
@@ -16,13 +14,10 @@ import kotlinx.coroutines.flow.receiveAsFlow
 object WearBridgeEvents {
     data class Message(val path: String, val payload: String)
 
-    private val _messages = MutableSharedFlow<Message>(replay = 16, extraBufferCapacity = 16)
-    val messages = _messages.asSharedFlow()
-    private val _messages = Channel<Message>(capacity = 16)
+    val _messages = Channel<Message>(capacity = 16)
     val messages = _messages.receiveAsFlow()
 
     fun emit(path: String, payload: String) {
-        _messages.tryEmit(Message(path, payload))
         _messages.trySend(Message(path, payload))
     }
 }
