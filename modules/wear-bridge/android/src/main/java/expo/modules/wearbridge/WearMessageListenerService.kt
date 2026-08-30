@@ -17,11 +17,6 @@ class WearMessageListenerService : WearableListenerService() {
     private val scope = CoroutineScope(Dispatchers.IO)
 
     override fun onMessageReceived(messageEvent: MessageEvent) {
-        // Show a quick visual confirmation on the phone that data arrived!
-        android.os.Handler(android.os.Looper.getMainLooper()).post {
-            android.widget.Toast.makeText(this, "Saatten mesaj alındı: ${messageEvent.path}", android.widget.Toast.LENGTH_SHORT).show()
-        }
-        
         when (messageEvent.path) {
             "/bp-log", "/med-log" -> {
                 val payload = String(messageEvent.data, Charsets.UTF_8)
