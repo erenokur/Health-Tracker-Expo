@@ -69,10 +69,8 @@ class WearBridgeModule : Module() {
          *   import { syncMedicineList } from "wear-bridge";
          *   await syncMedicineList(["İlaç A", "İlaç B"]);
          */
-        AsyncFunction("syncMedicineList") { names: List<String> ->
         AsyncFunction("syncMedicineList") { names: List<String>, promise: expo.modules.kotlin.Promise ->
             val context = appContext.reactContext
-                ?: throw Exception("React context not available")
             if (context == null) {
                 promise.reject("ERR", "React context not available", null)
                 return@AsyncFunction
@@ -84,7 +82,6 @@ class WearBridgeModule : Module() {
             }
             Wearable.getDataClient(context)
                 .putDataItem(request.asPutDataRequest().setUrgent())
-                .await()
                 .addOnSuccessListener {
                     promise.resolve(null)
                 }

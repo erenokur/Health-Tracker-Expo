@@ -34,15 +34,12 @@ class WearMessageListenerService : WearableListenerService() {
     /**
      * Reads the active medication list from the app's SQLite database and
      * pushes it to the watch via DataClient.putDataItem().
-     *
-     * The payload is stored under the "list" key inside a DataMap so the
-     * watch-side WearDataListenerService can read it with:
-     *   DataMapItem.fromDataItem(event.dataItem).dataMap.getString("list")
      */
     private suspend fun pushMedListToWatch(context: Context) {
         try {
+            val dbFile = java.io.File(context.filesDir, "SQLite/health_monitor.db")
             val db = android.database.sqlite.SQLiteDatabase.openDatabase(
-                context.getDatabasePath("health_tracker.db").absolutePath,
+                dbFile.absolutePath,
                 null,
                 android.database.sqlite.SQLiteDatabase.OPEN_READONLY,
             )
