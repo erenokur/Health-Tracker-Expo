@@ -64,4 +64,6 @@ coverage/
 npm-debug.log*
 yarn-debug.log*
 
-/modules/
+# Local Expo Modules Build Artifacts
+modules/*/android/build/
+modules/*/android/.cxx/

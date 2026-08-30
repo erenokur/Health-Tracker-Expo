@@ -1,14 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { Text, TextInput, ScrollView, StyleSheet, Alert } from "react-native";
+import {
+  Platform,
+  Text,
+  TextInput,
+  ScrollView,
+  StyleSheet,
+  Alert,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Picker } from "@react-native-picker/picker";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { MenuButton } from "../src/components/MenuButton";
 import { listCategories, ensureCategory } from "../src/db/categories";
-import { getMedication, saveMedication } from "../src/db/medications";
+import {
+  getMedication,
+  saveMedication,
+  listActiveMedicationNames,
+} from "../src/db/medications";
 import { ActiveStatus, MealType } from "../src/types";
 import { useTheme } from "../src/theme/ThemeContext";
 import { useLanguage } from "../src/i18n/LanguageContext";
+import { syncMedicineList } from "wear-bridge";
 
 export default function MedicationScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
@@ -75,6 +87,14 @@ export default function MedicationScreen() {
       editing ? id : undefined,
     );
 
+    // Push the updated active medication list to the paired watch so the
+    // chip picker in MedScreen stays in sync. Fire-and-forget — a sync
+    // failure (e.g. watch out of range) should never block the user.
+    if (Platform.OS === "android") {
+      const activeNames = listActiveMedicationNames();
+      syncMedicineList(activeNames).catch(() => {});
+    }
+
     Alert.alert(
       t("common.success"),
       `${name} ${editing ? t("medication.updatedMsg") : t("medication.addedMsg")}`,
@@ -83,7 +103,10 @@ export default function MedicationScreen() {
   }
 
   return (
-    <SafeAreaView style={[styles.flex, { backgroundColor: colors.background }]} edges={["bottom"]}>
+    <SafeAreaView
+      style={[styles.flex, { backgroundColor: colors.background }]}
+      edges={["bottom"]}
+    >
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={[styles.title, { color: colors.text }]}>
           {editing ? t("medication.titleEdit") : t("medication.titleAdd")}
@@ -91,17 +114,29 @@ export default function MedicationScreen() {
 
         <TextInput
           placeholderTextColor={colors.textMuted}
-          style={[styles.input, { color: colors.text, backgroundColor: colors.inputBackground, borderColor: colors.border }]}
+          style={[
+            styles.input,
+            {
+              color: colors.text,
+              backgroundColor: colors.inputBackground,
+              borderColor: colors.border,
+            },
+          ]}
           placeholder={t("medication.name")}
           value={name}
           onChangeText={setName}
         />
 
-        <Text style={[styles.label, { color: colors.text }]}>{t("medication.category")}</Text>
+        <Text style={[styles.label, { color: colors.text }]}>
+          {t("medication.category")}
+        </Text>
         <Picker
           selectedValue={category}
           onValueChange={setCategory}
-          style={[styles.picker, { color: colors.text, backgroundColor: colors.inputBackground }]}
+          style={[
+            styles.picker,
+            { color: colors.text, backgroundColor: colors.inputBackground },
+          ]}
         >
           {categories.map((c) => (
             <Picker.Item key={c} label={c} value={c} />
@@ -109,36 +144,63 @@ export default function MedicationScreen() {
         </Picker>
         <TextInput
           placeholderTextColor={colors.textMuted}
-          style={[styles.input, { color: colors.text, backgroundColor: colors.inputBackground, borderColor: colors.border }]}
+          style={[
+            styles.input,
+            {
+              color: colors.text,
+              backgroundColor: colors.inputBackground,
+              borderColor: colors.border,
+            },
+          ]}
           placeholder={t("medication.newCategoryPlaceholder")}
           value={newCategory}
           onChangeText={setNewCategory}
         />
 
-        <Text style={[styles.label, { color: colors.text }]}>{t("medication.status")}</Text>
+        <Text style={[styles.label, { color: colors.text }]}>
+          {t("medication.status")}
+        </Text>
         <Picker
           selectedValue={status}
           onValueChange={(v) => setStatus(v as ActiveStatus)}
-          style={[styles.picker, { color: colors.text, backgroundColor: colors.inputBackground }]}
+          style={[
+            styles.picker,
+            { color: colors.text, backgroundColor: colors.inputBackground },
+          ]}
         >
           <Picker.Item label={t("medication.statusActive")} value="Aktif" />
           <Picker.Item label={t("medication.statusInactive")} value="Pasif" />
         </Picker>
 
-        <Text style={[styles.label, { color: colors.text }]}>{t("medication.mealType")}</Text>
+        <Text style={[styles.label, { color: colors.text }]}>
+          {t("medication.mealType")}
+        </Text>
         <Picker
           selectedValue={mealType}
           onValueChange={(v) => setMealType(v as MealType)}
-          style={[styles.picker, { color: colors.text, backgroundColor: colors.inputBackground }]}
+          style={[
+            styles.picker,
+            { color: colors.text, backgroundColor: colors.inputBackground },
+          ]}
         >
           <Picker.Item label={t("medication.mealHungry")} value="Aç" />
           <Picker.Item label={t("medication.mealFull")} value="Tok" />
-          <Picker.Item label={t("medication.mealDoesntMatter")} value="Farketmez" />
+          <Picker.Item
+            label={t("medication.mealDoesntMatter")}
+            value="Farketmez"
+          />
         </Picker>
 
         <TextInput
           placeholderTextColor={colors.textMuted}
-          style={[styles.input, { color: colors.text, backgroundColor: colors.inputBackground, borderColor: colors.border }]}
+          style={[
+            styles.input,
+            {
+              color: colors.text,
+              backgroundColor: colors.inputBackground,
+              borderColor: colors.border,
+            },
+          ]}
           placeholder={t("medication.dailyDose")}
           keyboardType="number-pad"
           value={dailyDose}
@@ -146,7 +208,14 @@ export default function MedicationScreen() {
         />
         <TextInput
           placeholderTextColor={colors.textMuted}
-          style={[styles.input, { color: colors.text, backgroundColor: colors.inputBackground, borderColor: colors.border }]}
+          style={[
+            styles.input,
+            {
+              color: colors.text,
+              backgroundColor: colors.inputBackground,
+              borderColor: colors.border,
+            },
+          ]}
           placeholder={t("medication.notes")}
           value={notes}
           onChangeText={setNotes}
@@ -156,7 +225,11 @@ export default function MedicationScreen() {
           style={[
             styles.input,
             styles.multiline,
-            { color: colors.text, backgroundColor: colors.inputBackground, borderColor: colors.border },
+            {
+              color: colors.text,
+              backgroundColor: colors.inputBackground,
+              borderColor: colors.border,
+            },
           ]}
           placeholder={t("medication.description")}
           value={description}
