@@ -9,29 +9,12 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
-import { requestWidgetUpdate } from "react-native-android-widget";
 import { MenuButton } from "../src/components/MenuButton";
-import { addBpLog, getLatestBpLog } from "../src/db/bpLogs";
-import { LatestBpWidget } from "../src/widgets/LatestBpWidget";
+import { addBpLog } from "../src/db/bpLogs";
+import { refreshWidgetUI } from "../src/widgets/widgetUpdater";
 import { DateTimePickerButton } from "../src/components/DateTimePickerButton";
 import { useTheme } from "../src/theme/ThemeContext";
 import { useLanguage } from "../src/i18n/LanguageContext";
-
-async function refreshBpWidget() {
-  const latest = getLatestBpLog();
-  await requestWidgetUpdate({
-    widgetName: "LatestBp",
-    renderWidget: () => (
-      <LatestBpWidget
-        sys={latest?.sys}
-        dia={latest?.dia}
-        pulse={latest?.pulse ?? null}
-        timestamp={latest?.timestamp}
-      />
-    ),
-    widgetNotFound: () => {},
-  });
-}
 
 export default function BpTrackingScreen() {
   const router = useRouter();
@@ -55,7 +38,7 @@ export default function BpTrackingScreen() {
       note,
       customDate: logDate,
     });
-    refreshBpWidget();
+    refreshWidgetUI();
     Alert.alert(t("common.success"), t("bpTracking.savedMsg"));
     setSys("");
     setDia("");

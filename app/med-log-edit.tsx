@@ -9,6 +9,7 @@ import { getMedLog, updateMedLog, deleteMedLog } from "../src/db/medLogs";
 import { listActiveMedicationNames } from "../src/db/medications";
 import { parseDisplayTimestamp } from "../src/db/uuid";
 import { UsageMeal } from "../src/types";
+import { refreshWidgetUI } from "../src/widgets/widgetUpdater";
 import { useTheme } from "../src/theme/ThemeContext";
 import { useLanguage } from "../src/i18n/LanguageContext";
 
@@ -29,7 +30,10 @@ export default function MedLogEditScreen() {
     const log = getMedLog(id);
     const active = listActiveMedicationNames();
 
-    const names = log && !active.includes(log.med_name) ? [log.med_name, ...active] : active;
+    const names =
+      log && !active.includes(log.med_name)
+        ? [log.med_name, ...active]
+        : active;
     setMedNames(names);
 
     if (log) {
@@ -47,6 +51,7 @@ export default function MedLogEditScreen() {
       return;
     }
     updateMedLog(id, selectedMed, meal, logDate);
+    refreshWidgetUI();
     Alert.alert(t("common.success"), t("medLogEdit.updatedMsg"));
     router.back();
   }
@@ -60,6 +65,7 @@ export default function MedLogEditScreen() {
         style: "destructive",
         onPress: () => {
           deleteMedLog(id);
+          refreshWidgetUI();
           router.back();
         },
       },
@@ -69,36 +75,67 @@ export default function MedLogEditScreen() {
   if (!loaded) return null;
 
   return (
-    <SafeAreaView style={[styles.flex, { backgroundColor: colors.background }]} edges={["bottom"]}>
+    <SafeAreaView
+      style={[styles.flex, { backgroundColor: colors.background }]}
+      edges={["bottom"]}
+    >
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={[styles.title, { color: colors.text }]}>{t("medLogEdit.title")}</Text>
+        <Text style={[styles.title, { color: colors.text }]}>
+          {t("medLogEdit.title")}
+        </Text>
 
-        <DateTimePickerButton label={t("common.dateAndTime")} date={logDate} onChange={setLogDate} />
+        <DateTimePickerButton
+          label={t("common.dateAndTime")}
+          date={logDate}
+          onChange={setLogDate}
+        />
 
-        <Text style={[styles.label, { color: colors.text }]}>{t("filter.medication")}</Text>
+        <Text style={[styles.label, { color: colors.text }]}>
+          {t("filter.medication")}
+        </Text>
         <Picker
           selectedValue={selectedMed}
           onValueChange={setSelectedMed}
-          style={[styles.picker, { color: colors.text, backgroundColor: colors.inputBackground }]}
+          style={[
+            styles.picker,
+            { color: colors.text, backgroundColor: colors.inputBackground },
+          ]}
         >
           {medNames.map((m) => (
             <Picker.Item key={m} label={m} value={m} />
           ))}
         </Picker>
 
-        <Text style={[styles.label, { color: colors.text }]}>{t("medication.mealType")}</Text>
+        <Text style={[styles.label, { color: colors.text }]}>
+          {t("medication.mealType")}
+        </Text>
         <Picker
           selectedValue={meal}
           onValueChange={(v) => setMeal(v as UsageMeal)}
-          style={[styles.picker, { color: colors.text, backgroundColor: colors.inputBackground }]}
+          style={[
+            styles.picker,
+            { color: colors.text, backgroundColor: colors.inputBackground },
+          ]}
         >
           <Picker.Item label={t("medication.mealHungry")} value="Aç" />
           <Picker.Item label={t("medication.mealFull")} value="Tok" />
         </Picker>
 
-        <MenuButton label={t("medication.update")} variant="primary" onPress={handleSave} />
-        <MenuButton label={t("common.delete")} variant="muted" onPress={handleDelete} />
-        <MenuButton label={t("medication.cancelBack")} variant="muted" onPress={() => router.back()} />
+        <MenuButton
+          label={t("medication.update")}
+          variant="primary"
+          onPress={handleSave}
+        />
+        <MenuButton
+          label={t("common.delete")}
+          variant="muted"
+          onPress={handleDelete}
+        />
+        <MenuButton
+          label={t("medication.cancelBack")}
+          variant="muted"
+          onPress={() => router.back()}
+        />
       </ScrollView>
     </SafeAreaView>
   );
