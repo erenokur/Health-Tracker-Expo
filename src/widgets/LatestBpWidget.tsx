@@ -1,19 +1,16 @@
 import React from "react";
 import { FlexWidget, TextWidget } from "react-native-android-widget";
 
-// Note: these are NOT real React Native components — react-native-android-widget
-// renders these to native Android RemoteViews, so only its own supported style
-// properties work here (no arbitrary React Native styling, no ScrollView, etc).
+export type WidgetLogItem =
+  | { type: "bp"; id: string; timestamp: string; sys: number; dia: number; pulse: number | null }
+  | { type: "med"; id: string; timestamp: string; medName: string; mealType: string };
 
 interface Props {
-  sys?: number | null;
-  dia?: number | null;
-  pulse?: number | null;
-  timestamp?: string | null;
+  logs?: WidgetLogItem[];
 }
 
-export function LatestBpWidget({ sys, dia, pulse, timestamp }: Props) {
-  const hasData = sys != null && dia != null;
+export function LatestBpWidget({ logs = [] }: Props) {
+  const hasData = logs.length > 0;
 
   return (
     <FlexWidget
@@ -34,32 +31,62 @@ export function LatestBpWidget({ sys, dia, pulse, timestamp }: Props) {
           alignItems: "center",
         }}
       >
+        {/* Logs List Area */}
         <FlexWidget
-          style={{ alignItems: "center", justifyContent: "center", flex: 1 }}
+          style={{ flex: 1, width: "match_parent", flexDirection: "column", justifyContent: "flex-start" }}
         >
           {hasData ? (
-            <FlexWidget style={{ alignItems: "center" }}>
+            logs.map((log) => {
+              const isBp = log.type === "bp";
+              const time = log.timestamp.split(" ")[1].substring(0, 5); // extract HH:mm
+              const bgColor = isBp ? "#16A34A" : "#0284c7";
+              
+              // BP format: "120/80 (Nabız: 72)"
+              // Med format: "Aspirin (Tok)"
+              let infoText = "";
+              if (isBp) {
+                const pulseStr = log.pulse != null ? ` (N: ${log.pulse})` : "";
+                infoText = `${log.sys}/${log.dia}${pulseStr}`;
+              } else {
+                infoText = `${log.medName} (${log.mealType})`;
+              }
+
+              return (
+                <FlexWidget
+                  key={log.id}
+                  style={{
+                    width: "match_parent",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    backgroundColor: bgColor,
+                    borderRadius: 8,
+                    paddingHorizontal: 8,
+                    paddingVertical: 6,
+                    marginBottom: 4,
+                  }}
+                >
+                  <TextWidget
+                    text={time}
+                    style={{ fontSize: 13, fontWeight: "bold", color: "#ffffff", marginRight: 8 }}
+                  />
+                  <TextWidget
+                    text={infoText}
+                    style={{ fontSize: 13, color: "#ffffff", flex: 1 }}
+                  />
+                </FlexWidget>
+              );
+            })
+          ) : (
+            <FlexWidget style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
               <TextWidget
-                text={`${sys}/${dia}`}
-                style={{ fontSize: 28, fontWeight: "bold", color: "#ffffff" }}
-              />
-              <TextWidget
-                text={pulse != null ? `Nabız: ${pulse}` : "Nabız: -"}
-                style={{ fontSize: 14, color: "#94a3b8", marginTop: 4 }}
-              />
-              <TextWidget
-                text={timestamp ?? ""}
-                style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}
+                text="Henüz kayıt yok"
+                style={{ fontSize: 14, color: "#94a3b8" }}
               />
             </FlexWidget>
-          ) : (
-            <TextWidget
-              text="Henüz kayıt yok"
-              style={{ fontSize: 14, color: "#94a3b8" }}
-            />
           )}
         </FlexWidget>
 
+        {/* Bottom Quick Action Buttons */}
         <FlexWidget
           style={{
             flexDirection: "row",

@@ -1,15 +1,13 @@
 import { useEffect } from "react";
 import { Platform } from "react-native";
-import { requestWidgetUpdate } from "react-native-android-widget";
 import {
   addBpMessageListener,
   addMedMessageListener,
   WearBpMessage,
   WearMedMessage,
 } from "wear-bridge";
-import { addBpLog, getLatestBpLog } from "../db/bpLogs";
+import { addBpLog } from "../db/bpLogs";
 import { addMedLog } from "../db/medLogs";
-import { LatestBpWidget } from "../widgets/LatestBpWidget";
 
 // Watch sends "yyyy-MM-dd HH:mm:ss" (see PhoneSync usages in the Wear app) —
 // parsed manually since Hermes doesn't reliably parse that format via
@@ -21,21 +19,7 @@ function parseWatchTimestamp(ts: string): Date {
   return new Date(y, m - 1, d, hh, mm, ss ?? 0);
 }
 
-async function refreshBpWidget() {
-  const latest = getLatestBpLog();
-  await requestWidgetUpdate({
-    widgetName: "LatestBp",
-    renderWidget: () => (
-      <LatestBpWidget
-        sys={latest?.sys}
-        dia={latest?.dia}
-        pulse={latest?.pulse ?? null}
-        timestamp={latest?.timestamp}
-      />
-    ),
-    widgetNotFound: () => {},
-  });
-}
+import { refreshWidgetUI } from "../widgets/widgetUpdater";
 
 /**
  * Call once near the app root (see app/_layout.tsx). Subscribes for the
@@ -55,11 +39,16 @@ export function useWearBridgeListener() {
         note: event.note || "(Saatten)",
         customDate: parseWatchTimestamp(event.timestamp),
       });
-      refreshBpWidget();
+      refreshWidgetUI();
     });
 
     const medSub = addMedMessageListener((event: WearMedMessage) => {
-      addMedLog(event.medName, event.mealType, parseWatchTimestamp(event.timestamp));
+      addMedLog(
+        event.medName,
+        event.mealType,
+        parseWatchTimestamp(event.timestamp),
+      );
+      refreshWidgetUI();
     });
 
     return () => {

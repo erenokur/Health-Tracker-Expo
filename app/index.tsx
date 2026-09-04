@@ -172,12 +172,19 @@ export default function MainScreen() {
       {fabOpen && <Pressable style={styles.overlay} onPress={toggleFab} />}
 
       {/* Absolute Bottom Controls (Date Picker & FAB) */}
-      <View style={[styles.bottomControlsContainer, { bottom: bottomPadding }]}>
+      <View
+        style={[styles.bottomControlsContainer, { bottom: bottomPadding }]}
+        pointerEvents="box-none"
+      >
         {/* Date Filter Button */}
         <Pressable
           style={[
             styles.dateButton,
-            { backgroundColor: colors.surface, borderColor: colors.border },
+            {
+              backgroundColor: colors.surface,
+              borderColor: colors.border,
+              alignSelf: "flex-end",
+            },
           ]}
           onPress={() => setShowDatePicker(true)}
         >
@@ -188,28 +195,16 @@ export default function MainScreen() {
           </Text>
         </Pressable>
 
-        <View style={styles.flex} />
+        <View style={styles.flex} pointerEvents="none" />
 
         {/* Sub-FABs container mapped absolutely relative to Main FAB */}
-        <View style={styles.fabWrapper}>
+        <View style={styles.fabWrapper} pointerEvents="box-none">
           <Animated.View
             style={[
               styles.fabSubContainer,
               { opacity, transform: [{ translateY: translateYMed }] },
             ]}
           >
-            <Text
-              style={[
-                styles.fabLabel,
-                {
-                  color: colors.text,
-                  backgroundColor: colors.surface,
-                  borderColor: colors.border,
-                },
-              ]}
-            >
-              {language === "tr" ? "İlaç Gir" : "Add Med"}
-            </Text>
             <Pressable
               style={[styles.subFab, { backgroundColor: colors.primary }]}
               onPress={() => navigateTo("/med-tracking")}
@@ -224,18 +219,6 @@ export default function MainScreen() {
               { opacity, transform: [{ translateY: translateYBp }] },
             ]}
           >
-            <Text
-              style={[
-                styles.fabLabel,
-                {
-                  color: colors.text,
-                  backgroundColor: colors.surface,
-                  borderColor: colors.border,
-                },
-              ]}
-            >
-              {language === "tr" ? "Tansiyon Ekle" : "Add BP"}
-            </Text>
             <Pressable
               style={[styles.subFab, { backgroundColor: colors.primary }]}
               onPress={() => navigateTo("/bp-tracking")}
@@ -292,7 +275,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 16,
     right: 16,
-    height: 56,
+    height: 200,
     flexDirection: "row",
     alignItems: "flex-end",
     zIndex: 12,
@@ -311,7 +294,7 @@ const styles = StyleSheet.create({
   },
   fabWrapper: {
     width: 56,
-    height: 56,
+    height: 200,
     justifyContent: "flex-end",
     alignItems: "center",
   },

@@ -6,6 +6,7 @@ import { useRouter } from "expo-router";
 import { MenuButton } from "../src/components/MenuButton";
 import { listActiveMedicationNames } from "../src/db/medications";
 import { addMedLog } from "../src/db/medLogs";
+import { refreshWidgetUI } from "../src/widgets/widgetUpdater";
 import { UsageMeal } from "../src/types";
 import { DateTimePickerButton } from "../src/components/DateTimePickerButton";
 import { useTheme } from "../src/theme/ThemeContext";
@@ -32,6 +33,7 @@ export default function MedTrackingScreen() {
       return;
     }
     addMedLog(selectedMed, meal, logDate);
+    refreshWidgetUI();
     Alert.alert(
       t("common.success"),
       `${selectedMed} ${t("medTracking.savedMsg")}`,

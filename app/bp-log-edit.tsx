@@ -2,30 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Text, TextInput, ScrollView, StyleSheet, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { requestWidgetUpdate } from "react-native-android-widget";
 import { MenuButton } from "../src/components/MenuButton";
 import { DateTimePickerButton } from "../src/components/DateTimePickerButton";
-import { getBpLog, updateBpLog, deleteBpLog, getLatestBpLog } from "../src/db/bpLogs";
+import { getBpLog, updateBpLog, deleteBpLog } from "../src/db/bpLogs";
 import { parseDisplayTimestamp } from "../src/db/uuid";
-import { LatestBpWidget } from "../src/widgets/LatestBpWidget";
+import { refreshWidgetUI } from "../src/widgets/widgetUpdater";
 import { useTheme } from "../src/theme/ThemeContext";
 import { useLanguage } from "../src/i18n/LanguageContext";
-
-async function refreshBpWidget() {
-  const latest = getLatestBpLog();
-  await requestWidgetUpdate({
-    widgetName: "LatestBp",
-    renderWidget: () => (
-      <LatestBpWidget
-        sys={latest?.sys}
-        dia={latest?.dia}
-        pulse={latest?.pulse ?? null}
-        timestamp={latest?.timestamp}
-      />
-    ),
-    widgetNotFound: () => {},
-  });
-}
 
 export default function BpLogEditScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -68,7 +51,7 @@ export default function BpLogEditScreen() {
       note,
       customDate: logDate,
     });
-    refreshBpWidget();
+    refreshWidgetUI();
     Alert.alert(t("common.success"), t("bpLogEdit.updatedMsg"));
     router.back();
   }
@@ -82,7 +65,7 @@ export default function BpLogEditScreen() {
         style: "destructive",
         onPress: () => {
           deleteBpLog(id);
-          refreshBpWidget();
+          refreshWidgetUI();
           router.back();
         },
       },
@@ -92,15 +75,31 @@ export default function BpLogEditScreen() {
   if (!loaded) return null;
 
   return (
-    <SafeAreaView style={[styles.flex, { backgroundColor: colors.background }]} edges={["bottom"]}>
+    <SafeAreaView
+      style={[styles.flex, { backgroundColor: colors.background }]}
+      edges={["bottom"]}
+    >
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={[styles.title, { color: colors.text }]}>{t("bpLogEdit.title")}</Text>
+        <Text style={[styles.title, { color: colors.text }]}>
+          {t("bpLogEdit.title")}
+        </Text>
 
-        <DateTimePickerButton label={t("common.dateAndTime")} date={logDate} onChange={setLogDate} />
+        <DateTimePickerButton
+          label={t("common.dateAndTime")}
+          date={logDate}
+          onChange={setLogDate}
+        />
 
         <TextInput
           placeholderTextColor={colors.textMuted}
-          style={[styles.input, { color: colors.text, backgroundColor: colors.inputBackground, borderColor: colors.border }]}
+          style={[
+            styles.input,
+            {
+              color: colors.text,
+              backgroundColor: colors.inputBackground,
+              borderColor: colors.border,
+            },
+          ]}
           placeholder={t("bpLogs.colSys")}
           keyboardType="number-pad"
           value={sys}
@@ -108,7 +107,14 @@ export default function BpLogEditScreen() {
         />
         <TextInput
           placeholderTextColor={colors.textMuted}
-          style={[styles.input, { color: colors.text, backgroundColor: colors.inputBackground, borderColor: colors.border }]}
+          style={[
+            styles.input,
+            {
+              color: colors.text,
+              backgroundColor: colors.inputBackground,
+              borderColor: colors.border,
+            },
+          ]}
           placeholder={t("bpLogs.colDia")}
           keyboardType="number-pad"
           value={dia}
@@ -116,7 +122,14 @@ export default function BpLogEditScreen() {
         />
         <TextInput
           placeholderTextColor={colors.textMuted}
-          style={[styles.input, { color: colors.text, backgroundColor: colors.inputBackground, borderColor: colors.border }]}
+          style={[
+            styles.input,
+            {
+              color: colors.text,
+              backgroundColor: colors.inputBackground,
+              borderColor: colors.border,
+            },
+          ]}
           placeholder={t("bpLogs.colPulse")}
           keyboardType="number-pad"
           value={pulse}
@@ -124,15 +137,34 @@ export default function BpLogEditScreen() {
         />
         <TextInput
           placeholderTextColor={colors.textMuted}
-          style={[styles.input, { color: colors.text, backgroundColor: colors.inputBackground, borderColor: colors.border }]}
+          style={[
+            styles.input,
+            {
+              color: colors.text,
+              backgroundColor: colors.inputBackground,
+              borderColor: colors.border,
+            },
+          ]}
           placeholder={t("bpTracking.notePlaceholder")}
           value={note}
           onChangeText={setNote}
         />
 
-        <MenuButton label={t("medication.update")} variant="primary" onPress={handleSave} />
-        <MenuButton label={t("common.delete")} variant="muted" onPress={handleDelete} />
-        <MenuButton label={t("medication.cancelBack")} variant="muted" onPress={() => router.back()} />
+        <MenuButton
+          label={t("medication.update")}
+          variant="primary"
+          onPress={handleSave}
+        />
+        <MenuButton
+          label={t("common.delete")}
+          variant="muted"
+          onPress={handleDelete}
+        />
+        <MenuButton
+          label={t("medication.cancelBack")}
+          variant="muted"
+          onPress={() => router.back()}
+        />
       </ScrollView>
     </SafeAreaView>
   );
