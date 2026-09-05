@@ -21,8 +21,13 @@ export async function exportData() {
 
     const jsonString = JSON.stringify(exportObject, null, 2);
 
+    // Format timestamp as YYYY-MM-DD_HH-mm-ss
+    const now = new Date();
+    const pad = (n: number) => n.toString().padStart(2, "0");
+    const timestamp = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}_${pad(now.getHours())}-${pad(now.getMinutes())}-${pad(now.getSeconds())}`;
+
     // Create a temporary file path
-    const fileUri = `${FileSystem.documentDirectory}health-tracker-backup.json`;
+    const fileUri = `${FileSystem.documentDirectory}health-tracker-backup_${timestamp}.json`;
 
     // Write JSON to file
     await FileSystem.writeAsStringAsync(fileUri, jsonString, {

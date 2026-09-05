@@ -8,7 +8,8 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "android": {
-      "package": "com.yourname.healthtracker",
+      "package": "com.erenokur.healthtracker",
+      "icon": "./assets/icon.png",
       "adaptiveIcon": {
         "backgroundColor": "#1E293B"
       },
@@ -18,7 +19,7 @@
       ]
     },
     "ios": {
-      "bundleIdentifier": "com.yourname.healthtracker",
+      "bundleIdentifier": "com.erenokur.healthtracker",
       "supportsTablet": true
     },
     "plugins": [
