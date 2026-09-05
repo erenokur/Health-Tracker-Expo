@@ -5,11 +5,18 @@ import { db } from "../db/database";
 
 export async function refreshWidgetUI() {
   try {
+    const d = new Date();
+    const todayPrefix = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    const likeParam = todayPrefix + "%";
+
     const bpRows = db.getAllSync<any>(
       "SELECT id, timestamp, sys, dia, pulse FROM bp_logs WHERE deleted = 0 AND timestamp LIKE ? ORDER BY timestamp DESC LIMIT 8",
-      [likeParam],
+      [likeParam]
     );
-    const medRows = db.getAllSync<any>();
+    const medRows = db.getAllSync<any>(
+      "SELECT id, timestamp, med_name, meal_type FROM med_logs WHERE deleted = 0 AND timestamp LIKE ? ORDER BY timestamp DESC LIMIT 8",
+      [likeParam]
+    );
 
     const combined: WidgetLogItem[] = [
       ...bpRows.map((r) => ({

@@ -42,7 +42,7 @@ export async function widgetTaskHandler(props: WidgetTaskHandlerProps) {
     case "WIDGET_RESIZED": {
       try {
         initDb();
-        
+
         const d = new Date();
         const todayPrefix = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
         const likeParam = todayPrefix + "%";
@@ -50,22 +50,35 @@ export async function widgetTaskHandler(props: WidgetTaskHandlerProps) {
         // Fetch last 8 BP logs for today
         const bpRows = db.getAllSync<any>(
           "SELECT id, timestamp, sys, dia, pulse FROM bp_logs WHERE deleted = 0 AND timestamp LIKE ? ORDER BY timestamp DESC LIMIT 8",
-          [likeParam]
+          [likeParam],
         );
         // Fetch last 8 Med logs for today
         const medRows = db.getAllSync<any>(
           "SELECT id, timestamp, med_name, meal_type FROM med_logs WHERE deleted = 0 AND timestamp LIKE ? ORDER BY timestamp DESC LIMIT 8",
-          [likeParam]
+          [likeParam],
         );
-        
+
         const combined: WidgetLogItem[] = [
-          ...bpRows.map(r => ({ type: "bp" as const, id: r.id, timestamp: r.timestamp, sys: r.sys, dia: r.dia, pulse: r.pulse })),
-          ...medRows.map(r => ({ type: "med" as const, id: r.id, timestamp: r.timestamp, medName: r.med_name, mealType: r.meal_type }))
+          ...bpRows.map((r) => ({
+            type: "bp" as const,
+            id: r.id,
+            timestamp: r.timestamp,
+            sys: r.sys,
+            dia: r.dia,
+            pulse: r.pulse,
+          })),
+          ...medRows.map((r) => ({
+            type: "med" as const,
+            id: r.id,
+            timestamp: r.timestamp,
+            medName: r.med_name,
+            mealType: r.meal_type,
+          })),
         ];
-        
+
         // Sort by timestamp descending
         combined.sort((a, b) => (a.timestamp > b.timestamp ? -1 : 1));
-        
+
         // Take top 8 total
         const recentLogs = combined.slice(0, 8);
 
