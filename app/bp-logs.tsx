@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { View, Text, TextInput, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
+import { useRouter, useFocusEffect } from "expo-router";
 import { DataTable } from "../src/components/DataTable";
 import { DateTimePickerButton } from "../src/components/DateTimePickerButton";
 import { CollapsibleSection } from "../src/components/CollapsibleSection";
@@ -69,7 +69,14 @@ export default function BpLogScreen() {
     };
   }
 
-  const [logs, setLogs] = useState<BpLog[]>(() => listBpLogs(buildFilter()));
+  const [logs, setLogs] = useState<BpLog[]>([]);
+
+  useFocusEffect(
+    useCallback(() => {
+      setLogs(listBpLogs(buildFilter()));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [startDate, startTime, endDate, endTime, minSys, maxSys, minDia, maxDia, minPulse, maxPulse]),
+  );
 
   function applyFilter() {
     setLogs(listBpLogs(buildFilter()));

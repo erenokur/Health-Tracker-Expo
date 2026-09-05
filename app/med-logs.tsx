@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Picker } from "@react-native-picker/picker";
-import { useRouter } from "expo-router";
+import { useRouter, useFocusEffect } from "expo-router";
 import { DataTable } from "../src/components/DataTable";
 import { DateTimePickerButton } from "../src/components/DateTimePickerButton";
 import { CollapsibleSection } from "../src/components/CollapsibleSection";
@@ -45,7 +45,7 @@ export default function MedLogScreen() {
   const [endTime, setEndTime] = useState<Date>(() => endOfDay(new Date()));
   const [medNameFilter, setMedNameFilter] = useState<string>("");
 
-  const [medNames] = useState<string[]>(() => listDistinctMedLogNames());
+  const [medNames, setMedNames] = useState<string[]>(() => listDistinctMedLogNames());
 
   function combine(datePart: Date, timePart: Date): Date {
     const c = new Date(datePart);
@@ -61,7 +61,15 @@ export default function MedLogScreen() {
     };
   }
 
-  const [logs, setLogs] = useState<MedLog[]>(() => listMedLogs(buildFilter()));
+  const [logs, setLogs] = useState<MedLog[]>([]);
+
+  useFocusEffect(
+    useCallback(() => {
+      setMedNames(listDistinctMedLogNames());
+      setLogs(listMedLogs(buildFilter()));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [startDate, startTime, endDate, endTime, medNameFilter]),
+  );
 
   function applyFilter() {
     setLogs(listMedLogs(buildFilter()));
