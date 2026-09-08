@@ -47,17 +47,8 @@ export default function MainScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      const today = new Date();
-      const isNewDay =
-        today.getFullYear() !== filterDate.getFullYear() ||
-        today.getMonth() !== filterDate.getMonth() ||
-        today.getDate() !== filterDate.getDate();
-      if (isNewDay) {
-        setFilterDate(today);
-      } else {
-        loadData();
-      }
-    }, [loadData, filterDate]),
+      loadData(); 
+     }, [loadData]),
   );
 
   const toggleFab = () => {
