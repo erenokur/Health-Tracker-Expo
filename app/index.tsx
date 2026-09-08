@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -44,6 +44,10 @@ export default function MainScreen() {
     setBpLogs(listBpLogs({ start, end }));
     setMedLogs(listMedLogs({ start, end }));
   }, [filterDate]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   useFocusEffect(
     useCallback(() => {
